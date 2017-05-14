@@ -19,6 +19,7 @@ package com.example.goranminov.bakeapp;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,11 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.main_fragment, container, false);
         RecyclerView mainRecyclerView = (RecyclerView) rootView.findViewById(R.id.main_recycler_view);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mainRecyclerView.setLayoutManager(linearLayoutManager);
+        mainRecyclerView.setHasFixedSize(true);
+        MainAdapter mainAdapter = new MainAdapter(getContext());
+        mainRecyclerView.setAdapter(mainAdapter);
         return rootView;
     }
 }

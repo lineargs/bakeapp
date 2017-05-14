@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.example.goranminov.bakeapp.utils.BakingUtils;
 import com.example.goranminov.bakeapp.utils.retrofit.BakingRecipes;
 import com.example.goranminov.bakeapp.utils.retrofit.RecipesAPI;
 
@@ -37,8 +38,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String BASE_URL = "https://d17h27t6h515a5.cloudfront.net/";
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,35 +48,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .add(R.id.main_container, mainFragment)
                 .commit();
-        getRecipes();
+        BakingUtils.getRecipes();
     }
 
-    private void getRecipes() {
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        RecipesAPI recipesAPI = retrofit.create(RecipesAPI.class);
-
-        Call<List<BakingRecipes>> call = recipesAPI.bakingRecipes("baking.json");
-
-        call.enqueue(new Callback<List<BakingRecipes>>() {
-            @Override
-            public void onResponse(Call<List<BakingRecipes>> call, Response<List<BakingRecipes>> response) {
-                List<BakingRecipes> bakingRecipesList = response.body();
-                for (BakingRecipes bakingRecipes : bakingRecipesList) {
-                    Log.v(LOG_TAG, String.valueOf(bakingRecipes.getId()));
-                    Log.v(LOG_TAG, bakingRecipes.getName());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<BakingRecipes>> call, Throwable t) {
-
-            }
-        });
-
-    }
 }
