@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright (C) 2017 The Android Open Source Project
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,22 +14,30 @@
  *   limitations under the License.
  */
 
-package com.example.goranminov.thebakingapp;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
+package com.example.goranminov.bakeapp.utils.retrofit;
 
 /**
  * Created by goranminov on 12/05/2017.
  */
 
-public interface RecipesAPI {
+public class BakingRecipes {
 
-    @GET("topher/2017/May/59121517_baking/{json}")
-    Call<List<BakingRecipes>> bakingRecipes(
-            @Path("json") String json);
+    private int id;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

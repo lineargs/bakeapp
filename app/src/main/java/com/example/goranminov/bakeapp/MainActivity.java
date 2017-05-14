@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright (C) 2017 The Android Open Source Project
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,14 +14,21 @@
  *   limitations under the License.
  */
 
-package com.example.goranminov.thebakingapp;
+package com.example.goranminov.bakeapp;
 
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
+
+import com.example.goranminov.bakeapp.utils.retrofit.BakingRecipes;
+import com.example.goranminov.bakeapp.utils.retrofit.RecipesAPI;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,16 +40,20 @@ public class MainActivity extends AppCompatActivity {
     public static final String BASE_URL = "https://d17h27t6h515a5.cloudfront.net/";
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        MainFragment mainFragment = new MainFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .add(R.id.main_container, mainFragment)
+                .commit();
         getRecipes();
     }
 
     private void getRecipes() {
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())

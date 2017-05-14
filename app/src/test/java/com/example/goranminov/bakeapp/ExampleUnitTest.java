@@ -1,4 +1,4 @@
-package com.example.goranminov.thebakingapp;
+package com.example.goranminov.bakeapp;
 
 import org.junit.Test;
 
