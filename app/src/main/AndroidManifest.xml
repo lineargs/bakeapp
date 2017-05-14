@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.goranminov.bakeapp.MainActivity">
+        <activity android:name=".MainActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,9 +21,19 @@
         </activity>
 
         <provider
-            android:authorities="com.example.goranminov.bakeapp"
             android:name=".data.BakingProvider"
+            android:authorities="com.example.goranminov.bakeapp"
             android:exported="false" />
+
+        <activity
+            android:name=".DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.goranminov.bakeapp.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

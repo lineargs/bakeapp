@@ -17,6 +17,7 @@
 package com.example.goranminov.bakeapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -68,14 +69,15 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
      */
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater
+        final View view = LayoutInflater
                 .from(mContext)
                 .inflate(R.layout.main_card_layout, parent, false);
         view.setFocusable(true);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(mContext, DetailActivity.class);
+                mContext.startActivity(intent);
             }
         });
         return new MovieAdapterViewHolder(view);
