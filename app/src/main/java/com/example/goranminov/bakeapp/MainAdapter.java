@@ -20,8 +20,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 
 /**
  * Created by goranminov on 14/05/2017.
@@ -44,9 +48,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
      * Cache of the children views.
      */
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder{
-
+        public final ImageView mImageCardView;
+        public final TextView mNameTextView;
+        TextView mRecipeNameText;
         public MovieAdapterViewHolder(View view) {
             super(view);
+            mImageCardView = (ImageView) view.findViewById(R.id.recipe_image_card_view);
+            mNameTextView = (TextView) view.findViewById(R.id.recipe_name_card_view);
         }
     }
 
@@ -60,8 +68,17 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
      */
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater
+                .from(mContext)
+                .inflate(R.layout.main_card_layout, parent, false);
+        view.setFocusable(true);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        return new MovieAdapterViewHolder(parent);
+            }
+        });
+        return new MovieAdapterViewHolder(view);
     }
 
     /**
@@ -74,7 +91,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, final int position) {
-
+        mCursor.moveToPosition(position);
+        holder.mImageCardView.setImageResource(R.drawable.baking);
+        holder.mNameTextView.setText(mCursor.getString(MainFragment.INDEX_RECIPE_NAME));
     }
 
     /**

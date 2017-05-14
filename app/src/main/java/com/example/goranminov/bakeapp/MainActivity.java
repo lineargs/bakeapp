@@ -43,12 +43,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MainFragment mainFragment = new MainFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.main_container, mainFragment)
-                .commit();
-        BakingUtils.getRecipes();
+
+        if (savedInstanceState == null) {
+            BakingUtils.getRecipes(this);
+            MainFragment mainFragment = new MainFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .add(R.id.main_container, mainFragment)
+                    .commit();
+        }
     }
 
 

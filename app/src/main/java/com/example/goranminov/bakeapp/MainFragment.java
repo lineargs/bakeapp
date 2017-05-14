@@ -16,36 +16,93 @@
 
 package com.example.goranminov.bakeapp;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.goranminov.bakeapp.data.BakingContract;
+import com.example.goranminov.bakeapp.utils.BakingUtils;
+import com.example.goranminov.bakeapp.utils.retrofit.BakingRecipes;
+
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by goranminov on 14/05/2017.
  */
 
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<Cursor> {
 
+    @BindView(R.id.main_recycler_view) RecyclerView mRecyclerView;
+    private MainAdapter mMainAdapter;
 
+    private static final int RECIPE_LOADER_ID = 29;
+
+    public static final String[] MAIN_PROJECTION = {
+            BakingContract.RecipeEntry.COLUMN_NAME,
+            BakingContract.RecipeEntry.COLUMN_RECIPE_ID,
+    };
+
+    public static final int INDEX_RECIPE_NAME = 0;
+    public static final int INDEX_RECIPE_ID = 1;
 
     public MainFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.main_fragment, container, false);
-        RecyclerView mainRecyclerView = (RecyclerView) rootView.findViewById(R.id.main_recycler_view);
+        ButterKnife.bind(this, rootView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mainRecyclerView.setLayoutManager(linearLayoutManager);
-        mainRecyclerView.setHasFixedSize(true);
-        MainAdapter mainAdapter = new MainAdapter(getContext());
-        mainRecyclerView.setAdapter(mainAdapter);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        mMainAdapter = new MainAdapter(getContext());
+        mRecyclerView.setAdapter(mMainAdapter);
+        getLoaderManager().initLoader(RECIPE_LOADER_ID, null, this);
         return rootView;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        switch (id) {
+            case RECIPE_LOADER_ID:
+                return new CursorLoader(getContext(),
+                        BakingContract.RecipeEntry.CONTENT_URI,
+                        MAIN_PROJECTION,
+                        null,
+                        null,
+                        null);
+            default:
+                throw new RuntimeException("Loader not implemented: " + id);
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            switch (loader.getId()) {
+                case RECIPE_LOADER_ID:
+                    mMainAdapter.swapCursor(data);
+                    if (data != null && data.getCount() != 0) {
+                        data.moveToFirst();
+                    }
+                    break;
+                default:
+                    throw new RuntimeException("Loader not implemented: " + loader.getId());
+            }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mMainAdapter.swapCursor(null);
     }
 }

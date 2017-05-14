@@ -16,8 +16,12 @@
 
 package com.example.goranminov.bakeapp.utils;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
 import android.util.Log;
 
+import com.example.goranminov.bakeapp.data.BakingContract;
 import com.example.goranminov.bakeapp.utils.retrofit.BakingRecipes;
 import com.example.goranminov.bakeapp.utils.retrofit.RecipesAPI;
 
@@ -36,9 +40,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BakingUtils {
 
     private static final String BASE_URL = "https://d17h27t6h515a5.cloudfront.net/";
-    private static final String LOG_TAG = BakingUtils.class.getSimpleName();
 
-    public static void getRecipes() {
+    public static void getRecipes(final Context context) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -52,10 +55,17 @@ public class BakingUtils {
         call.enqueue(new Callback<List<BakingRecipes>>() {
             @Override
             public void onResponse(Call<List<BakingRecipes>> call, Response<List<BakingRecipes>> response) {
-                List<BakingRecipes> bakingRecipesList = response.body();
-                for (BakingRecipes bakingRecipes : bakingRecipesList) {
-                    Log.v(LOG_TAG, String.valueOf(bakingRecipes.getId()));
-                    Log.v(LOG_TAG, bakingRecipes.getName());
+                if (response.isSuccessful()) {
+                    List<BakingRecipes> bakingRecipesList = response.body();
+                    for (BakingRecipes bakingRecipes : bakingRecipesList) {
+                        ContentValues[] recipeValues = getRecipesContentValues(bakingRecipes);
+                        if (recipeValues != null && recipeValues.length != 0) {
+                            ContentResolver recipeContentResolver = context.getContentResolver();
+
+                            recipeContentResolver.bulkInsert(BakingContract.RecipeEntry.CONTENT_URI,
+                                    recipeValues);
+                        }
+                    }
                 }
             }
 
@@ -64,6 +74,14 @@ public class BakingUtils {
 
             }
         });
+    }
 
+    private static ContentValues[] getRecipesContentValues (BakingRecipes bakingRecipes) {
+        ContentValues[] recipeContentValues = new ContentValues[1];
+        ContentValues recipeValues = new ContentValues();
+        recipeValues.put(BakingContract.RecipeEntry.COLUMN_RECIPE_ID, bakingRecipes.getId());
+        recipeValues.put(BakingContract.RecipeEntry.COLUMN_NAME, bakingRecipes.getName());
+        recipeContentValues[0] = recipeValues;
+        return recipeContentValues;
     }
 }
