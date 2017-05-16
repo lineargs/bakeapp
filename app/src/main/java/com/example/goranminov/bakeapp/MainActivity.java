@@ -16,25 +16,14 @@
 
 package com.example.goranminov.bakeapp;
 
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
 
 import com.example.goranminov.bakeapp.utils.BakingUtils;
-import com.example.goranminov.bakeapp.utils.retrofit.BakingRecipes;
-import com.example.goranminov.bakeapp.utils.retrofit.RecipesAPI;
 
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,9 +32,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        BakingUtils.getRecipes(this);
 
         if (savedInstanceState == null) {
-            BakingUtils.getRecipes(this);
+
             MainFragment mainFragment = new MainFragment();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
@@ -53,6 +43,4 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
     }
-
-
 }

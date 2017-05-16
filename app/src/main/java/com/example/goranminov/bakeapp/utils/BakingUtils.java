@@ -23,7 +23,9 @@ import android.util.Log;
 
 import com.example.goranminov.bakeapp.data.BakingContract;
 import com.example.goranminov.bakeapp.utils.retrofit.BakingRecipes;
+import com.example.goranminov.bakeapp.utils.retrofit.Ingredient;
 import com.example.goranminov.bakeapp.utils.retrofit.RecipesAPI;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -58,6 +60,10 @@ public class BakingUtils {
                 if (response.isSuccessful()) {
                     List<BakingRecipes> bakingRecipesList = response.body();
                     for (BakingRecipes bakingRecipes : bakingRecipesList) {
+                        List<Ingredient> ingredientList = bakingRecipes.getIngredients();
+                        for (Ingredient ingredient : ingredientList) {
+                            getIngredientsValues(bakingRecipes, ingredient);
+                        }
                         ContentValues[] recipeValues = getRecipesContentValues(bakingRecipes);
                         if (recipeValues != null && recipeValues.length != 0) {
                             ContentResolver recipeContentResolver = context.getContentResolver();
@@ -71,7 +77,7 @@ public class BakingUtils {
 
             @Override
             public void onFailure(Call<List<BakingRecipes>> call, Throwable t) {
-
+                Log.e("Failure ", t.getMessage());
             }
         });
     }
@@ -81,7 +87,15 @@ public class BakingUtils {
         ContentValues recipeValues = new ContentValues();
         recipeValues.put(BakingContract.RecipeEntry.COLUMN_RECIPE_ID, bakingRecipes.getId());
         recipeValues.put(BakingContract.RecipeEntry.COLUMN_NAME, bakingRecipes.getName());
+        Log.v("Recipe ID: ", String.valueOf(bakingRecipes.getId()));
+        Log.v("Name ", bakingRecipes.getName());
         recipeContentValues[0] = recipeValues;
         return recipeContentValues;
+    }
+
+    private static ContentValues[] getIngredientsValues (BakingRecipes bakingRecipes, Ingredient ingredient) {
+        Log.v("ID: ", String.valueOf(bakingRecipes.getId()));
+        Log.v("ingredient: ", ingredient.getIngredient());
+        return null;
     }
 }
