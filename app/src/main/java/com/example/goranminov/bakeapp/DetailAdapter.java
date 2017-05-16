@@ -19,7 +19,6 @@ package com.example.goranminov.bakeapp;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,14 +27,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.goranminov.bakeapp.data.BakingContract;
-
 
 /**
  * Created by goranminov on 14/05/2017.
  */
 
-public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterViewHolder>{
+public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MovieAdapterViewHolder>{
 
 
     private final Context mContext;
@@ -44,7 +41,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
     /**
      * Creates a MainAdapter.
      */
-    public MainAdapter(@NonNull Context context) {
+    public DetailAdapter(@NonNull Context context) {
         mContext = context;
     }
 
@@ -52,13 +49,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
      * Cache of the children views.
      */
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder{
-        public final ImageView mImageCardView;
-        public final TextView mNameTextView;
-        TextView mRecipeNameText;
+        public final TextView mIngredientTextView;
+
         public MovieAdapterViewHolder(View view) {
             super(view);
-            mImageCardView = (ImageView) view.findViewById(R.id.recipe_image_card_view);
-            mNameTextView = (TextView) view.findViewById(R.id.recipe_name_card_view);
+            mIngredientTextView = (TextView) view.findViewById(R.id.ingredient_card_text_view);
         }
     }
 
@@ -74,18 +69,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = LayoutInflater
                 .from(mContext)
-                .inflate(R.layout.main_card_layout, parent, false);
+                .inflate(R.layout.detail_card_layout, parent, false);
         view.setFocusable(true);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCursor.moveToPosition(mCursor.getPosition());
-                Intent intent = new Intent(mContext, DetailActivity.class);
-                Uri uri = BakingContract.RecipeEntry.buildRecipeUriWithId(mCursor.getLong(MainFragment.INDEX_RECIPE_ID));
-                intent.setData(uri);
-                mContext.startActivity(intent);
-            }
-        });
         return new MovieAdapterViewHolder(view);
     }
 
@@ -99,9 +84,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, final int position) {
-        mCursor.moveToPosition(position);
-        holder.mImageCardView.setImageResource(R.drawable.baking);
-        holder.mNameTextView.setText(mCursor.getString(MainFragment.INDEX_RECIPE_NAME));
+//        mCursor.moveToPosition(position);
+        holder.mIngredientTextView.setText("Ingredients");
     }
 
     /**
@@ -112,7 +96,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
     @Override
     public int getItemCount() {
         if (mCursor == null) {
-            return 0;
+            return 1;
         }
         return mCursor.getCount();
     }

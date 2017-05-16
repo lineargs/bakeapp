@@ -58,17 +58,22 @@ public class BakingUtils {
             @Override
             public void onResponse(Call<List<BakingRecipes>> call, Response<List<BakingRecipes>> response) {
                 if (response.isSuccessful()) {
+                    ContentResolver contentResolver = context.getContentResolver();
                     List<BakingRecipes> bakingRecipesList = response.body();
                     for (BakingRecipes bakingRecipes : bakingRecipesList) {
                         List<Ingredient> ingredientList = bakingRecipes.getIngredients();
                         for (Ingredient ingredient : ingredientList) {
-                            getIngredientsValues(bakingRecipes, ingredient);
+                            ContentValues[] ingredientsValues = getIngredientsValues(bakingRecipes, ingredient);
+                            if (ingredientsValues != null && ingredientsValues.length != 0) {
+                                contentResolver.bulkInsert(BakingContract.RecipeIngredients.CONTENT_URI,
+                                        ingredientsValues);
+                            }
                         }
                         ContentValues[] recipeValues = getRecipesContentValues(bakingRecipes);
                         if (recipeValues != null && recipeValues.length != 0) {
-                            ContentResolver recipeContentResolver = context.getContentResolver();
 
-                            recipeContentResolver.bulkInsert(BakingContract.RecipeEntry.CONTENT_URI,
+
+                            contentResolver.bulkInsert(BakingContract.RecipeEntry.CONTENT_URI,
                                     recipeValues);
                         }
                     }
@@ -87,15 +92,18 @@ public class BakingUtils {
         ContentValues recipeValues = new ContentValues();
         recipeValues.put(BakingContract.RecipeEntry.COLUMN_RECIPE_ID, bakingRecipes.getId());
         recipeValues.put(BakingContract.RecipeEntry.COLUMN_NAME, bakingRecipes.getName());
-        Log.v("Recipe ID: ", String.valueOf(bakingRecipes.getId()));
-        Log.v("Name ", bakingRecipes.getName());
         recipeContentValues[0] = recipeValues;
         return recipeContentValues;
     }
 
     private static ContentValues[] getIngredientsValues (BakingRecipes bakingRecipes, Ingredient ingredient) {
-        Log.v("ID: ", String.valueOf(bakingRecipes.getId()));
-        Log.v("ingredient: ", ingredient.getIngredient());
-        return null;
+        ContentValues[] ingredientsContentValues = new ContentValues[1];
+        ContentValues ingredientsValues = new ContentValues();
+        ingredientsValues.put(BakingContract.RecipeIngredients.COLUMN_RECIPE_ID, bakingRecipes.getId());
+        ingredientsValues.put(BakingContract.RecipeIngredients.COLUMN_QUANTITY, ingredient.getQuantity());
+        ingredientsValues.put(BakingContract.RecipeIngredients.COLUMN_MEASURE, ingredient.getMeasure());
+        ingredientsValues.put(BakingContract.RecipeIngredients.COLUMN_INGREDIENT, ingredient.getIngredient());
+        ingredientsContentValues[0] = ingredientsValues;
+        return ingredientsContentValues;
     }
 }
