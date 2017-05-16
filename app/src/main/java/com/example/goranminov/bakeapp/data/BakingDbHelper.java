@@ -36,7 +36,7 @@ public class BakingDbHelper extends SQLiteOpenHelper {
      * If you change the database schema, you must increment the database version or the onUpgrade
      * method will not be called.
      */
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public BakingDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -79,10 +79,35 @@ public class BakingDbHelper extends SQLiteOpenHelper {
                         "UNIQUE (" + BakingContract.RecipeEntry.COLUMN_RECIPE_ID + ") ON CONFLICT REPLACE);";
 
         /*
+         * This String will contain a simple SQL statement that will create a table that will
+         * cache our recipe data.
+         */
+        final String SQL_CREATE_INGREDIENTS_TABLE =
+
+                "CREATE TABLE " + BakingContract.RecipeIngredients.TABLE_NAME + " (" +
+
+                        /*
+                         * RecipeEntry did not explicitly declare a column called "_ID". However,
+                         * RecipeEntry implements the interface "BaseColumns", which does have a field
+                         * named "_ID". We use that here to designate our table's primary key.
+                         */
+                        BakingContract.RecipeIngredients._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+
+                        BakingContract.RecipeIngredients.COLUMN_RECIPE_ID + " INTEGER NOT NULL, " +
+
+                        BakingContract.RecipeIngredients.COLUMN_QUANTITY + " REAL NOT NULL, " +
+
+                        BakingContract.RecipeIngredients.COLUMN_MEASURE + " TEXT NOT NULL, " +
+
+                        BakingContract.RecipeIngredients.COLUMN_INGREDIENT + " TEXT NOT NULL);";
+
+
+        /*
          * After we've spelled out our SQLite table creation statements above, we actually execute
          * that SQLs with the execSQL method of our SQLite database object.
          */
         db.execSQL(SQL_CREATE_RECIPE_TABLE);
+        db.execSQL(SQL_CREATE_INGREDIENTS_TABLE);
     }
 
     /**
@@ -100,6 +125,7 @@ public class BakingDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + BakingContract.RecipeEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BakingContract.RecipeIngredients.TABLE_NAME);
         onCreate(db);
     }
 }

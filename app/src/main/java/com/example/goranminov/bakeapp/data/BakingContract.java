@@ -58,6 +58,22 @@ public class BakingContract {
      */
     public static final String PATH_RECIPE = "recipe";
 
+    /*
+     * Possible paths that can be appended to BASE_CONTENT_URI to form valid URI's that BakeApp
+     * can handle. For instance,
+     *
+     *     content://com.example.goranminov.bakeapp/ingredients/
+     *     [           BASE_CONTENT_URI             ][ PATH_INGREDIENTS ]
+     *
+     * is a valid path for looking at ingredients data.
+     *
+     *      content://com.example.goranminov.bakeapp/givemeroot/
+     *
+     * will fail, as the ContentProvider hasn't been given any information on what to do with
+     * "givemeroot".
+     */
+    public static final String PATH_INGREDIENTS = "ingredients";
+
 
     /* Inner class that defines the table contents of the recipe table */
     public static final class RecipeEntry implements BaseColumns {
@@ -84,6 +100,43 @@ public class BakingContract {
          * @return Uri to query details about a single recipe entry
          */
         public static Uri buildRecipeUriWithId(long id) {
+            return CONTENT_URI.buildUpon()
+                    .appendPath(Long.toString(id))
+                    .build();
+        }
+    }
+
+    /* Inner class that defines the table contents of the recipe table */
+    public static final class RecipeIngredients implements BaseColumns {
+
+        /* The base CONTENT_URI used to query the recipes table from the content provider */
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+                .appendPath(PATH_INGREDIENTS)
+                .build();
+        /* Used internally as the name of our ingredients table. */
+        public static final String TABLE_NAME = "ingredients";
+
+        /* The recipe ID as returned by API*/
+        public static final String COLUMN_RECIPE_ID = "recipe_id";
+
+        /* The ingredients quantity as returned by API*/
+        public static final String COLUMN_QUANTITY = "quantity";
+
+        /* The ingredients measure as returned by API*/
+        public static final String COLUMN_MEASURE = "measure";
+
+        /* The ingredients ingredient as returned by API*/
+        public static final String COLUMN_INGREDIENT = "ingredient";
+
+        /**
+         * Builds a URI that adds the recipe id to the end of the ingredients content URI path.
+         * This is used to query details about a single ingredient entry by id. This is what we
+         * use for the detail view query.
+         *
+         * @param id Recipe ID
+         * @return Uri to query details about a single recipe entry
+         */
+        public static Uri buildIngredientUriWithId(long id) {
             return CONTENT_URI.buildUpon()
                     .appendPath(Long.toString(id))
                     .build();

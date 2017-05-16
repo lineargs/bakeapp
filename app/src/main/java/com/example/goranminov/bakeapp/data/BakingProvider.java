@@ -47,6 +47,8 @@ public class BakingProvider extends ContentProvider {
 
     public static final int CODE_RECIPES = 100;
     public static final int CODE_RECIPES_WITH_ID = 101;
+    public static final int CODE_INGREDIENTS = 200;
+    public static final int CODE_INGREDIENTS_WITH_ID = 201;
 
     /*
      * The URI Matcher used by this content provider. The leading "s" in this variable name
@@ -88,6 +90,16 @@ public class BakingProvider extends ContentProvider {
          * that it should return the CODE_RECIPES_WITH_ID code
          */
         matcher.addURI(authority, BakingContract.PATH_RECIPE + "/#", CODE_RECIPES_WITH_ID);
+
+        /* This URI is content://com.example.goranminov.bakeapp/ingredients/ */
+        matcher.addURI(authority, BakingContract.PATH_INGREDIENTS, CODE_INGREDIENTS);
+
+        /*
+         * This URI would look something like content://com.example.goranminov.bakeapp/ingredients/123567
+         * The "/#" signifies to the UriMatcher that if PATH_INGREDIENTS is followed by ANY number,
+         * that it should return the CODE_RECIPES_WITH_ID code
+         */
+        matcher.addURI(authority, BakingContract.PATH_INGREDIENTS + "/#", CODE_INGREDIENTS_WITH_ID);
 
         return matcher;
     }
@@ -149,13 +161,13 @@ public class BakingProvider extends ContentProvider {
             /*
              * When sUriMatcher's match method is called with a URI that looks EXACTLY like this
              *
-             *      content://com.example.goranminov.popmovies/movie/
+             *      content://com.example.goranminov.bakeapp/recipe/
              *
              * sUriMatcher's match method will return the code that indicates to us that we need
-             * to return all of the movies in our movie table.
+             * to return all of the recipes in our recipe table.
              *
-             * In this case, we want to return a cursor that contains every row of movie data
-             * in our movie table.
+             * In this case, we want to return a cursor that contains every row of recipe data
+             * in our recipe table.
              */
             case CODE_RECIPES:
                 retCursor = mBakingDbHelper.getReadableDatabase().query(
@@ -233,6 +245,70 @@ public class BakingProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
+
+            case CODE_INGREDIENTS:
+                retCursor = mBakingDbHelper.getReadableDatabase().query(
+
+                        /* Table we are going to query */
+                        BakingContract.RecipeIngredients.TABLE_NAME,
+
+                        /*
+                         * A projection designates the columns we want returned in our Cursor.
+                         * Passing null will return all columns of data within the Cursor.
+                         * However, if you don't need all the data from the table, it's best
+                         * practice to limit the columns returned in the Cursor with a projection.
+                         */
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case CODE_INGREDIENTS_WITH_ID:
+
+                /*
+                 * In order to determine the recipe ID associated with this URI, we look at the last
+                 * path segment. In the comment above, the last path segment is 123567 and
+                 * represents the recipe ID.
+                 */
+                String idIngredient = uri.getLastPathSegment();
+
+                /*
+                 * The query method accepts a string array of arguments, as there may be more
+                 * than one "?" in the selection statement. Even though in our case, we only have
+                 * one "?", we have to create a string array that only contains one element
+                 * because this method signature accepts a string array.
+                 */
+                String[] selectionIngredient = new String[]{idIngredient};
+                retCursor = mBakingDbHelper.getReadableDatabase().query(
+
+                        /* Table we are going to query */
+                        BakingContract.RecipeIngredients.TABLE_NAME,
+
+                        /*
+                         * A projection designates the columns we want returned in our Cursor.
+                         * Passing null will return all columns of data within the Cursor.
+                         * However, if you don't need all the data from the table, it's best
+                         * practice to limit the columns returned in the Cursor with a projection.
+                         */
+                        projection,
+
+                        /*
+                         * The URI that matches CODE_RECIPES_WITH_ID contains an ID at the end
+                         * of it. We extract that ID and use it with these next two lines to
+                         * specify the row of recipe we want returned in the cursor. We use a
+                         * question mark here and then designate selectionArguments as the next
+                         * argument for performance reasons. Whatever Strings are contained
+                         * within the selectionArguments array will be inserted into the
+                         * selection statement by SQLite under the hood.
+                         */
+                        BakingContract.RecipeIngredients.COLUMN_RECIPE_ID + " = ? ",
+                        selectionIngredient,
+                        null,
+                        null,
+                        sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -265,6 +341,24 @@ public class BakingProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insert(BakingContract.RecipeEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            rowsInserted++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+
+                if (rowsInserted > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+                return rowsInserted;
+            case CODE_INGREDIENTS:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(BakingContract.RecipeIngredients.TABLE_NAME, null, value);
                         if (_id != -1) {
                             rowsInserted++;
                         }
@@ -321,6 +415,18 @@ public class BakingProvider extends ContentProvider {
             case CODE_RECIPES_WITH_ID:
                 numRowsDeleted = mBakingDbHelper.getWritableDatabase().delete(
                         BakingContract.RecipeEntry.TABLE_NAME,
+                        BakingContract.RecipeEntry._ID + " = ? ",
+                        selectionArgs);
+                break;
+            case CODE_INGREDIENTS:
+                numRowsDeleted = mBakingDbHelper.getWritableDatabase().delete(
+                        BakingContract.RecipeIngredients.TABLE_NAME,
+                        selection,
+                        selectionArgs);
+                break;
+            case CODE_INGREDIENTS_WITH_ID:
+                numRowsDeleted = mBakingDbHelper.getWritableDatabase().delete(
+                        BakingContract.RecipeIngredients.TABLE_NAME,
                         BakingContract.RecipeEntry._ID + " = ? ",
                         selectionArgs);
                 break;
