@@ -36,7 +36,7 @@ public class BakingDbHelper extends SQLiteOpenHelper {
      * If you change the database schema, you must increment the database version or the onUpgrade
      * method will not be called.
      */
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public BakingDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -80,17 +80,12 @@ public class BakingDbHelper extends SQLiteOpenHelper {
 
         /*
          * This String will contain a simple SQL statement that will create a table that will
-         * cache our recipe data.
+         * cache our ingredients data.
          */
         final String SQL_CREATE_INGREDIENTS_TABLE =
 
                 "CREATE TABLE " + BakingContract.RecipeIngredients.TABLE_NAME + " (" +
 
-                        /*
-                         * RecipeEntry did not explicitly declare a column called "_ID". However,
-                         * RecipeEntry implements the interface "BaseColumns", which does have a field
-                         * named "_ID". We use that here to designate our table's primary key.
-                         */
                         BakingContract.RecipeIngredients._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
                         BakingContract.RecipeIngredients.COLUMN_RECIPE_ID + " INTEGER NOT NULL, " +
@@ -101,6 +96,26 @@ public class BakingDbHelper extends SQLiteOpenHelper {
 
                         BakingContract.RecipeIngredients.COLUMN_INGREDIENT + " TEXT NOT NULL);";
 
+        /*
+         * This String will contain a simple SQL statement that will create a table that will
+         * cache our steps data.
+         */
+        final String SQL_CREATE_STEPS_TABLE =
+
+                "CREATE TABLE " + BakingContract.RecipeSteps.TABLE_NAME + " (" +
+
+                        BakingContract.RecipeSteps._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+
+                        BakingContract.RecipeSteps.COLUMN_RECIPE_ID + " INTEGER NOT NULL, " +
+
+                        BakingContract.RecipeSteps.COLUMN_SHORT_DESCRIPTION + " TEXT NOT NULL, " +
+
+                        BakingContract.RecipeSteps.COLUMN_DESCRIPTION + " TEXT NOT NULL, " +
+
+                        BakingContract.RecipeSteps.COLUMN_VIDEO + " TEXT, " +
+
+                        BakingContract.RecipeSteps.COLUMN_THUMBNAIL + " TEXT);";
+
 
         /*
          * After we've spelled out our SQLite table creation statements above, we actually execute
@@ -108,6 +123,7 @@ public class BakingDbHelper extends SQLiteOpenHelper {
          */
         db.execSQL(SQL_CREATE_RECIPE_TABLE);
         db.execSQL(SQL_CREATE_INGREDIENTS_TABLE);
+        db.execSQL(SQL_CREATE_STEPS_TABLE);
     }
 
     /**
@@ -126,6 +142,7 @@ public class BakingDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + BakingContract.RecipeEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + BakingContract.RecipeIngredients.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BakingContract.RecipeSteps.TABLE_NAME);
         onCreate(db);
     }
 }
