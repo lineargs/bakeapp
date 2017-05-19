@@ -531,7 +531,7 @@ public class BakingProvider extends ContentProvider {
             case CODE_STEPS_WITH_ID:
                 numRowsDeleted = mBakingDbHelper.getWritableDatabase().delete(
                         BakingContract.RecipeSteps.TABLE_NAME,
-                        BakingContract.RecipeSteps.COLUMN_STEP_ID + " = ? ",
+                        BakingContract.RecipeSteps.COLUMN_RECIPE_ID + " = ? ",
                         selectionArgs);
                 break;
             default:

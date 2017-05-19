@@ -97,6 +97,12 @@ public class BakingContract {
         /* The recipe name as returned by API*/
         public static final String COLUMN_NAME = "name";
 
+        /* The recipe servings as returned by API*/
+        public static final String COLUMN_SERVINGS = "servings";
+
+        /* The recipe image as returned by API*/
+        public static final String COLUMN_IMAGE = "image";
+
         /**
          * Builds a URI that adds the recipe id to the end of the recipe content URI path.
          * This is used to query details about a single recipe entry by id. This is what we

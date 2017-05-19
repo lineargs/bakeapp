@@ -17,14 +17,12 @@
 package com.example.goranminov.bakeapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -32,7 +30,7 @@ import android.widget.TextView;
  * Created by goranminov on 14/05/2017.
  */
 
-public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MovieAdapterViewHolder>{
+public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
 
     private final Context mContext;
@@ -49,11 +47,11 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MovieAdapt
      * Cache of the children views.
      */
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder{
-        public final TextView mIngredientTextView;
+//        public final TextView mIngredientTextView;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
-            mIngredientTextView = (TextView) view.findViewById(R.id.ingredient_card_text_view);
+//            mIngredientTextView = (TextView) view.findViewById(R.id.ingredient_card_text_view);
         }
     }
 
@@ -66,10 +64,10 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MovieAdapt
      * @return A new MovieOverviewViewHolder that holds the View for each grid item
      */
     @Override
-    public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = LayoutInflater
                 .from(mContext)
-                .inflate(R.layout.detail_card_layout, parent, false);
+                .inflate(R.layout.detail_ingredient, parent, false);
         view.setFocusable(true);
         return new MovieAdapterViewHolder(view);
     }
@@ -83,9 +81,8 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.MovieAdapt
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(MovieAdapterViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 //        mCursor.moveToPosition(position);
-        holder.mIngredientTextView.setText("Ingredients");
     }
 
     /**
