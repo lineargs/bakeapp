@@ -78,8 +78,12 @@ class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Ingredien
     @Override
     public void onBindViewHolder(final IngredientViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        holder.ingredientText.setText
-                (mCursor.getString(IngredientsFragment.INDEX_QUANTITY));
+        String ingredientString = mCursor.getString(IngredientsFragment.INDEX_QUANTITY);
+        ingredientString = ingredientString + " " +
+                mCursor.getString(IngredientsFragment.INDEX_MEASURE);
+        ingredientString = ingredientString + " of " +
+                mCursor.getString(IngredientsFragment.INDEX_INGREDIENT);
+        holder.ingredientText.setText(ingredientString);
     }
 
     /*

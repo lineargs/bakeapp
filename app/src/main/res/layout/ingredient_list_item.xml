@@ -20,15 +20,15 @@
     android:layout_height="wrap_content"
     android:background="@drawable/ingredient_selector"
     android:orientation="vertical"
-    android:paddingTop="24dp"
-    android:paddingBottom="24dp">
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp">
 
     <TextView
         android:id="@+id/ingredient_text_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:textSize="24sp"
+        android:textSize="16sp"
         android:layout_margin="8dp"
         android:textColor="@android:color/white" />
 
