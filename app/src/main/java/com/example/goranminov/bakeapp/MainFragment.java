@@ -48,10 +48,12 @@ public class MainFragment extends Fragment implements
     public static final String[] MAIN_PROJECTION = {
             BakingContract.RecipeEntry.COLUMN_NAME,
             BakingContract.RecipeEntry.COLUMN_RECIPE_ID,
+            BakingContract.RecipeEntry.COLUMN_SERVINGS,
     };
 
     public static final int INDEX_RECIPE_NAME = 0;
     public static final int INDEX_RECIPE_ID = 1;
+    public static final int INDEX_RECIPE_SERVINGS = 2;
 
     public MainFragment() {}
 

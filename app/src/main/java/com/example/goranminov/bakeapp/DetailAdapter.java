@@ -17,7 +17,9 @@
 package com.example.goranminov.bakeapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,34 +27,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.goranminov.bakeapp.data.BakingContract;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 /**
  * Created by goranminov on 14/05/2017.
  */
 
-public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
+    private final int VIEW_TYPE_INGREDIENT = 0;
+    private final int VIEW_TYPE_STEP = 1;
 
     private final Context mContext;
-    private Cursor mCursor;
+    private Cursor ingredientCursor;
+    private Cursor stepCursor;
 
     /**
      * Creates a MainAdapter.
      */
-    public DetailAdapter(@NonNull Context context) {
+    DetailAdapter(@NonNull Context context) {
         mContext = context;
-    }
-
-    /*
-     * Cache of the children views.
-     */
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder{
-//        public final TextView mIngredientTextView;
-
-        public MovieAdapterViewHolder(View view) {
-            super(view);
-//            mIngredientTextView = (TextView) view.findViewById(R.id.ingredient_card_text_view);
-        }
     }
 
     /**
@@ -65,11 +63,20 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      */
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View view = LayoutInflater
-                .from(mContext)
-                .inflate(R.layout.detail_ingredient, parent, false);
-        view.setFocusable(true);
-        return new MovieAdapterViewHolder(view);
+        switch (viewType) {
+            case VIEW_TYPE_INGREDIENT:
+                View ingredientView = LayoutInflater
+                        .from(mContext)
+                        .inflate(R.layout.detail_ingredient, parent, false);
+                return new IngredientViewHolder(ingredientView);
+            case VIEW_TYPE_STEP:
+                View stepView = LayoutInflater
+                        .from(mContext)
+                        .inflate(R.layout.detail_step, parent, false);
+                return new StepViewHolder(stepView);
+            default:
+                throw new IllegalArgumentException("Invalid view type, value of " + viewType);
+        }
     }
 
     /**
@@ -82,7 +89,71 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      */
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-//        mCursor.moveToPosition(position);
+        switch (getItemViewType(position)) {
+            case VIEW_TYPE_INGREDIENT:
+                final IngredientViewHolder ingredientViewHolder = (IngredientViewHolder) holder;
+                ingredientViewHolder.bindViews(mContext);
+                ingredientViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ingredientCursor.moveToPosition(ingredientViewHolder.getAdapterPosition());
+                        Intent intent = new Intent(mContext, IngredientsActivity.class);
+                        Uri uri = BakingContract.RecipeIngredients
+                                .buildIngredientUriWithId
+                                        (ingredientCursor.getLong(DetailFragment.INDEX_RECIPE_ID));
+                        intent.setData(uri);
+                        mContext.startActivity(intent);
+                    }
+                });
+                break;
+            case VIEW_TYPE_STEP:
+                StepViewHolder stepViewHolder = (StepViewHolder) holder;
+                stepViewHolder.bindViews(mContext, position - 1);
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return VIEW_TYPE_INGREDIENT;
+        } else {
+            return VIEW_TYPE_STEP;
+        }
+    }
+
+    /*
+         * Cache of the children views.
+         */
+    class IngredientViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.detail_ingredient_text_view)
+                TextView ingredientText;
+
+        IngredientViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+        void bindViews (Context context) {
+            ingredientCursor.moveToPosition(getAdapterPosition());
+            ingredientText.setText(R.string.detail_ingredients);
+        }
+    }
+
+    /*
+     * Cache of the children views.
+     */
+    class StepViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.detail_step_text_view)
+                TextView stepText;
+
+        StepViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+
+        void bindViews(Context context, int position) {
+            stepCursor.moveToPosition(position);
+            stepText.setText(stepCursor.getString(DetailFragment.INDEX_SHORT_DESCRIPTION));
+        }
     }
 
     /**
@@ -92,10 +163,8 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      */
     @Override
     public int getItemCount() {
-        if (mCursor == null) {
-            return 1;
-        }
-        return mCursor.getCount();
+        if (ingredientCursor == null || stepCursor == null) return 0;
+        return 1 + stepCursor.getCount();
     }
 
     /**
@@ -104,8 +173,19 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      *
      * @param newCursor The new movie data to be displayed.
      */
-    public void swapCursor(Cursor newCursor) {
-        mCursor = newCursor;
+    public void swapIngredientCursor(Cursor newCursor) {
+        ingredientCursor = newCursor;
+        notifyDataSetChanged();
+    }
+
+    /**
+     * This method is used to set the movie data on a MainAdapter if we've already
+     * created one.
+     *
+     * @param newCursor The new movie data to be displayed.
+     */
+    public void swapStepCursor(Cursor newCursor) {
+        stepCursor = newCursor;
         notifyDataSetChanged();
     }
 }

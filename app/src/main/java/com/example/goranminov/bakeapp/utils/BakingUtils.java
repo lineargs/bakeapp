@@ -23,7 +23,9 @@ package com.example.goranminov.bakeapp.utils;
 class BakingUtils {
 
     static String getMeasure(String measure, double quantity) {
+
         if (measure.equals("CUP")) {
+
             if (quantity != 1) return "cups";
             else return "cup";
         } else if (measure.equals("TBLSP")) {

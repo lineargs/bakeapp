@@ -30,6 +30,9 @@ import android.widget.TextView;
 
 import com.example.goranminov.bakeapp.data.BakingContract;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 /**
  * Created by goranminov on 14/05/2017.
@@ -52,13 +55,16 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
      * Cache of the children views.
      */
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder{
-        public final ImageView mImageCardView;
-        public final TextView mNameTextView;
-        TextView mRecipeNameText;
+        @BindView(R.id.recipe_name_card_view)
+        TextView recipeName;
+        @BindView(R.id.recipe_image_card_view)
+        ImageView recipeImage;
+        @BindView(R.id.recipe_servings_card_view)
+        TextView recipeServings;
+
         public MovieAdapterViewHolder(View view) {
             super(view);
-            mImageCardView = (ImageView) view.findViewById(R.id.recipe_image_card_view);
-            mNameTextView = (TextView) view.findViewById(R.id.recipe_name_card_view);
+            ButterKnife.bind(this, view);
         }
     }
 
@@ -72,20 +78,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
      */
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View view = LayoutInflater
+        View view = LayoutInflater
                 .from(mContext)
                 .inflate(R.layout.main_card_layout, parent, false);
-        view.setFocusable(true);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCursor.moveToPosition(mCursor.getPosition());
-                Intent intent = new Intent(mContext, DetailActivity.class);
-                Uri uri = BakingContract.RecipeEntry.buildRecipeUriWithId(mCursor.getLong(MainFragment.INDEX_RECIPE_ID));
-                intent.setData(uri);
-                mContext.startActivity(intent);
-            }
-        });
         return new MovieAdapterViewHolder(view);
     }
 
@@ -98,10 +93,22 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(MovieAdapterViewHolder holder, final int position) {
+    public void onBindViewHolder(final MovieAdapterViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        holder.mImageCardView.setImageResource(R.drawable.baking);
-        holder.mNameTextView.setText(mCursor.getString(MainFragment.INDEX_RECIPE_NAME));
+        holder.recipeImage.setImageResource(R.drawable.baking);
+        holder.recipeName.setText(mCursor.getString(MainFragment.INDEX_RECIPE_NAME));
+        holder.recipeServings.setText(R.string.resipe_servings);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCursor.moveToPosition(holder.getAdapterPosition());
+                Intent intent = new Intent(mContext, DetailActivity.class);
+                Uri uri = BakingContract.RecipeEntry.buildRecipeUriWithId(mCursor.getLong(MainFragment.INDEX_RECIPE_ID));
+                intent.setData(uri);
+                intent.putExtra("title", mCursor.getString(MainFragment.INDEX_RECIPE_NAME));
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     /**

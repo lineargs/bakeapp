@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ Copyright (C) 2017 The Android Open Source Project
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,22 +14,12 @@
   ~   limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment"
+    android:name="com.example.goranminov.bakeapp.IngredientsFragment"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/ingredient_selector"
-    android:orientation="vertical"
-    android:paddingTop="24dp"
-    android:paddingBottom="24dp">
-
-    <TextView
-        android:id="@+id/detail_ingredient_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:textSize="24sp"
-        android:layout_margin="8dp"
-        android:textColor="@android:color/white" />
-
-</LinearLayout>
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:layout="@layout/fragment_ingredients" />

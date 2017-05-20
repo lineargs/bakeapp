@@ -2,5 +2,7 @@
     <string name="app_name">BakeApp</string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="action_settings">Settings</string>
-    <string name="detail_ingredients"> ingredients</string>
+    <string name="detail_ingredients">Ingredients</string>
+    <string name="resipe_servings">Serving: </string>
+    <string name="title_activity_ingredients">Ingredients</string>
 </resources>

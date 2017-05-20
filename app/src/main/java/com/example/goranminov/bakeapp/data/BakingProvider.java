@@ -377,7 +377,7 @@ public class BakingProvider extends ContentProvider {
                          * within the selectionArguments array will be inserted into the
                          * selection statement by SQLite under the hood.
                          */
-                        BakingContract.RecipeSteps.COLUMN_STEP_ID + " = ? ",
+                        BakingContract.RecipeSteps.COLUMN_RECIPE_ID + " = ? ",
                         selectionSteps,
                         null,
                         null,
