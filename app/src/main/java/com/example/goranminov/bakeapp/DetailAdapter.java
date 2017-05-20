@@ -107,8 +107,20 @@ class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 });
                 break;
             case VIEW_TYPE_STEP:
-                StepViewHolder stepViewHolder = (StepViewHolder) holder;
+                final StepViewHolder stepViewHolder = (StepViewHolder) holder;
                 stepViewHolder.bindViews(mContext, position - 1);
+                stepViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        stepCursor.moveToPosition(stepViewHolder.getAdapterPosition() - 1);
+                        Intent intent = new Intent(mContext, StepActivity.class);
+                        Uri uri = BakingContract.RecipeSteps
+                                .buildStepUriWithId
+                                        (stepCursor.getLong(DetailFragment.INDEX_STEP_RECIPE_ID));
+                        intent.setData(uri);
+                        mContext.startActivity(intent);
+                    }
+                });
         }
     }
 

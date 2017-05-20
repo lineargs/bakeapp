@@ -49,18 +49,18 @@ public class DetailFragment extends Fragment implements
     private static final int STEP_LOADER_ID = 102;
 
     public static final String[] DETAIL_INGREDIENT_PROJECTION = {
-            BakingContract.RecipeEntry.COLUMN_NAME,
             BakingContract.RecipeEntry.COLUMN_RECIPE_ID
     };
 
-    public static final int INDEX_RECIPE_NAME = 0;
     public static final int INDEX_RECIPE_ID = 0;
 
     public static final String[] DETAIL_STEP_PROJECTION = {
+            BakingContract.RecipeSteps.COLUMN_RECIPE_ID,
             BakingContract.RecipeSteps.COLUMN_SHORT_DESCRIPTION
     };
 
-    public static final int INDEX_SHORT_DESCRIPTION = 0;
+    public static final int INDEX_STEP_RECIPE_ID = 0;
+    public static final int INDEX_SHORT_DESCRIPTION = 1;
 
     private Uri mRecipeUri;
 
@@ -81,7 +81,6 @@ public class DetailFragment extends Fragment implements
             throw new NullPointerException("URI cannot be null");
         } else {
             mRecipeUri = getActivity().getIntent().getData();
-            Log.v("Recipe Uri: ", mRecipeUri.toString());
         }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);

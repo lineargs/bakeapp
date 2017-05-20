@@ -38,7 +38,7 @@ import butterknife.ButterKnife;
  * Created by goranminov on 14/05/2017.
  */
 
-public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterViewHolder>{
+class MainAdapter extends RecyclerView.Adapter<MainAdapter.RecipeViewHolder>{
 
 
     private final Context mContext;
@@ -51,23 +51,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
         mContext = context;
     }
 
-    /*
-     * Cache of the children views.
-     */
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.recipe_name_card_view)
-        TextView recipeName;
-        @BindView(R.id.recipe_image_card_view)
-        ImageView recipeImage;
-        @BindView(R.id.recipe_servings_card_view)
-        TextView recipeServings;
-
-        public MovieAdapterViewHolder(View view) {
-            super(view);
-            ButterKnife.bind(this, view);
-        }
-    }
-
     /**
      * This gets called when each new ViewHolder is created. This happens when the RecyclerView
      * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
@@ -77,11 +60,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
      * @return A new MovieOverviewViewHolder that holds the View for each grid item
      */
     @Override
-    public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(mContext)
                 .inflate(R.layout.main_card_layout, parent, false);
-        return new MovieAdapterViewHolder(view);
+        return new RecipeViewHolder(view);
     }
 
     /**
@@ -93,11 +76,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(final MovieAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(final RecipeViewHolder holder, int position) {
         mCursor.moveToPosition(position);
         holder.recipeImage.setImageResource(R.drawable.baking);
         holder.recipeName.setText(mCursor.getString(MainFragment.INDEX_RECIPE_NAME));
-        holder.recipeServings.setText(R.string.resipe_servings);
+        holder.recipeServings.setText
+                (String.format("Serving: %d", mCursor.getInt(MainFragment.INDEX_RECIPE_SERVINGS)));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,6 +93,23 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
                 mContext.startActivity(intent);
             }
         });
+    }
+
+    /*
+     * Cache of the children views.
+     */
+    class RecipeViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.recipe_name_card_view)
+        TextView recipeName;
+        @BindView(R.id.recipe_image_card_view)
+        ImageView recipeImage;
+        @BindView(R.id.recipe_servings_card_view)
+        TextView recipeServings;
+
+        RecipeViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
     }
 
     /**
@@ -130,7 +131,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MovieAdapterVi
      *
      * @param newCursor The new movie data to be displayed.
      */
-    public void swapCursor(Cursor newCursor) {
+    void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
         notifyDataSetChanged();
     }

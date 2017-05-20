@@ -17,16 +17,23 @@
 package com.example.goranminov.bakeapp;
 
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.goranminov.bakeapp.data.BakingContract;
+
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -38,23 +45,72 @@ public class IngredientsFragment extends Fragment implements
     RecyclerView mRecyclerView;
     private IngredientAdapter mAdapter;
 
+    private static final int LOADER_ID = 101;
+
+    public static final String[] INGREDIENT_PROJECTION = {
+            BakingContract.RecipeIngredients.COLUMN_QUANTITY,
+            BakingContract.RecipeIngredients.COLUMN_INGREDIENT,
+            BakingContract.RecipeIngredients.COLUMN_MEASURE
+    };
+
+    public static final int INDEX_QUANTITY = 0;
+    public static final int INDEX_INGREDIENT = 1;
+    public static final int INDEX_MEASURE = 2;
+
+    private Uri mUri;
+
     public IngredientsFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_ingredients, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_ingredients, container, false);
+        ButterKnife.bind(this, rootView);
+
+        if (getActivity().getIntent().getData() == null) {
+            throw new NullPointerException("URI cannot be null");
+        } else {
+            mUri = getActivity().getIntent().getData();
+            Log.v("Uri: ", mUri.toString());
+        }
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        mAdapter = new IngredientAdapter(getContext());
+        mRecyclerView.setAdapter(mAdapter);
+        getLoaderManager().initLoader(LOADER_ID, null, this);
+        return rootView;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+        switch (id) {
+            case LOADER_ID:
+                return new CursorLoader(getContext(),
+                        mUri,
+                        INGREDIENT_PROJECTION,
+                        null,
+                        null,
+                        null);
+            default:
+                throw new RuntimeException("Loader not implemented: " + id);
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        int id = loader.getId();
+        switch (id) {
+            case LOADER_ID:
+                mAdapter.swapCursor(data);
+                if (data != null && data.getCount() != 0) {
+                    data.moveToFirst();
+                }
+                break;
+            default:
+                throw new RuntimeException("Loader not implemented: " + id);
+        }
     }
 
     @Override

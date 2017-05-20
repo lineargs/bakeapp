@@ -29,6 +29,7 @@
         <activity
             android:name=".DetailActivity"
             android:label="@string/title_activity_detail"
+            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -38,6 +39,15 @@
         <activity
             android:name=".IngredientsActivity"
             android:label="@string/title_activity_ingredients"
+            android:parentActivityName=".DetailActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.goranminov.bakeapp.DetailActivity" />
+        </activity>
+        <activity
+            android:name=".StepActivity"
+            android:label="@string/title_activity_step"
             android:parentActivityName=".DetailActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
