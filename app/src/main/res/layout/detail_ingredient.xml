@@ -13,15 +13,14 @@
   ~   See the License for the specific language governing permissions and
   ~   limitations under the License.
   -->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/ingredient_selector"
     android:orientation="vertical"
     android:paddingTop="24dp"
-    android:paddingBottom="24dp">
+    android:paddingBottom="24dp"
+    android:layout_marginBottom="8dp">
 
     <TextView
         android:id="@+id/detail_ingredient_text_view"
