@@ -6,4 +6,6 @@
     <string name="resipe_servings">Serving:</string>
     <string name="title_activity_ingredients">Ingredients</string>
     <string name="title_activity_step">StepActivity</string>
+    <string name="title_activity_tabbed">Steps</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
