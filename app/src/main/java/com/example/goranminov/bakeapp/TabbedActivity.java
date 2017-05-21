@@ -16,9 +16,7 @@
 
 package com.example.goranminov.bakeapp;
 
-import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v4.app.LoaderManager;
@@ -32,7 +30,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -142,6 +139,7 @@ public class TabbedActivity extends AppCompatActivity
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -181,6 +179,7 @@ public class TabbedActivity extends AppCompatActivity
             mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.playerView);
             mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource
                     (getResources(), R.drawable.question_mark));
+            initializePlayer(Uri.parse(getArguments().getString(ARG_VIDEO)));
             textView.setText(getArguments().getString(ARG_DESCRIPTION));
             return rootView;
         }
