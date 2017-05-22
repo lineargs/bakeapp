@@ -38,7 +38,7 @@ import butterknife.ButterKnife;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class IngredientsFragment extends Fragment implements
+public class IngredientFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>{
 
     @BindView(R.id.ingredient_recycler_view)
@@ -59,7 +59,7 @@ public class IngredientsFragment extends Fragment implements
 
     private Uri mUri;
 
-    public IngredientsFragment() {
+    public IngredientFragment() {
     }
 
     @Override

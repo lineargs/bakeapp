@@ -20,7 +20,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.goranminov.bakeapp.IngredientActivity">
+    tools:context="com.example.goranminov.bakeapp.StepActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -36,6 +36,22 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_ingredients" />
+    <include layout="@layout/content_step" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_arrow_forward_black_24px" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_previous"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_arrow_back_black_24px" />
 
 </android.support.design.widget.CoordinatorLayout>

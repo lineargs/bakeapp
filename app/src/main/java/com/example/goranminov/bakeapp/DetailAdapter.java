@@ -97,7 +97,7 @@ class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     @Override
                     public void onClick(View v) {
                         ingredientCursor.moveToPosition(ingredientViewHolder.getAdapterPosition());
-                        Intent intent = new Intent(mContext, IngredientsActivity.class);
+                        Intent intent = new Intent(mContext, IngredientActivity.class);
                         Uri uri = BakingContract.RecipeIngredients
                                 .buildIngredientUriWithId
                                         (ingredientCursor.getLong(DetailFragment.INDEX_RECIPE_ID));
@@ -113,12 +113,12 @@ class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     @Override
                     public void onClick(View v) {
                         stepCursor.moveToPosition(stepViewHolder.getAdapterPosition() - 1);
-                        Intent intent = new Intent(mContext, TabbedActivity.class);
+                        Intent intent = new Intent(mContext, StepActivity.class);
                         Uri uri = BakingContract.RecipeSteps
                                 .buildStepUriWithId
                                         (stepCursor.getLong(DetailFragment.INDEX_STEP_RECIPE_ID));
                         intent.setData(uri);
-                        intent.putExtra("position", stepCursor.getString(DetailFragment.INDEX_STEP_ID));
+                        intent.putExtra("title", stepCursor.getString(DetailFragment.INDEX_RECIPE_NAME));
                         mContext.startActivity(intent);
                     }
                 });

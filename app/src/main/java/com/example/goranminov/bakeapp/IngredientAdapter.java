@@ -17,18 +17,13 @@
 package com.example.goranminov.bakeapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.example.goranminov.bakeapp.data.BakingContract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,11 +73,11 @@ class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Ingredien
     @Override
     public void onBindViewHolder(final IngredientViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        String ingredientString = mCursor.getString(IngredientsFragment.INDEX_QUANTITY);
+        String ingredientString = mCursor.getString(IngredientFragment.INDEX_QUANTITY);
         ingredientString = ingredientString + " " +
-                mCursor.getString(IngredientsFragment.INDEX_MEASURE);
+                mCursor.getString(IngredientFragment.INDEX_MEASURE);
         ingredientString = ingredientString + " of " +
-                mCursor.getString(IngredientsFragment.INDEX_INGREDIENT);
+                mCursor.getString(IngredientFragment.INDEX_INGREDIENT);
         holder.ingredientText.setText(ingredientString);
     }
 

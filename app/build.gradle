@@ -4,6 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
     defaultConfig {
+        vectorDrawables.useSupportLibrary = true
         applicationId "com.example.goranminov.bakeapp"
         minSdkVersion 15
         targetSdkVersion 25

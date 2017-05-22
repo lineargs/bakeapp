@@ -14,25 +14,22 @@
   ~   limitations under the License.
   -->
 
-<!--
- SwipeViews are completely finished
-     * Note that we do not use it because of the Project Specification
--->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context="com.example.goranminov.bakeapp.viewpager.PlaceholderFragment">
+    tools:context="com.example.goranminov.bakeapp.StepFragment">
 
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-        android:id="@+id/playerView"
+        android:id="@+id/step_player_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
     <TextView
-        android:id="@+id/section_label"
+        android:id="@+id/step_section_label"
         android:layout_width="match_parent"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"

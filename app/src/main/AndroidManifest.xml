@@ -37,7 +37,7 @@
                 android:value="com.example.goranminov.bakeapp.MainActivity" />
         </activity>
         <activity
-            android:name=".IngredientsActivity"
+            android:name=".IngredientActivity"
             android:label="@string/title_activity_ingredients"
             android:parentActivityName=".DetailActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -46,8 +46,17 @@
                 android:value="com.example.goranminov.bakeapp.DetailActivity" />
         </activity>
         <activity
-            android:name=".TabbedActivity"
+            android:name=".viewpager.TabbedActivity"
             android:label="@string/title_activity_tabbed"
+            android:parentActivityName=".DetailActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.goranminov.bakeapp.DetailActivity" />
+        </activity>
+        <activity
+            android:name=".StepActivity"
+            android:label="@string/title_activity_step"
             android:parentActivityName=".DetailActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

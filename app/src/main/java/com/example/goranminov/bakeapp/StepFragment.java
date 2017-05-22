@@ -17,8 +17,9 @@
 package com.example.goranminov.bakeapp;
 
 import android.database.Cursor;
-import android.os.Bundle;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -31,65 +32,58 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.goranminov.bakeapp.data.BakingContract;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by goranminov on 14/05/2017.
+ * A placeholder fragment containing a simple view.
  */
+public class StepFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<Cursor>{
 
-public class MainFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+    @BindView(R.id.step_recycler_view) RecyclerView mRecyclerView;
+    private StepAdapter mStepAdapter;
 
-    @BindView(R.id.main_recycler_view) RecyclerView mRecyclerView;
-    private MainAdapter mMainAdapter;
+    private static final int LOADER_ID = 29;
 
-    private static final int RECIPE_LOADER_ID = 29;
-
-    public static final String[] MAIN_PROJECTION = {
-            BakingContract.RecipeEntry.COLUMN_NAME,
-            BakingContract.RecipeEntry.COLUMN_RECIPE_ID,
-            BakingContract.RecipeEntry.COLUMN_SERVINGS,
+    public static final String[] STEP_PROJECTION = {
+            BakingContract.RecipeSteps.COLUMN_DESCRIPTION,
+            BakingContract.RecipeSteps.COLUMN_VIDEO,
     };
 
-    public static final int INDEX_RECIPE_NAME = 0;
-    public static final int INDEX_RECIPE_ID = 1;
-    public static final int INDEX_RECIPE_SERVINGS = 2;
+    public static final int INDEX_STEP_DESCRIPTION = 0;
+    public static final int INDEX_STEP_VIDEO = 1;
 
-    public MainFragment() {}
+    public StepFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_step, container, false);
         ButterKnife.bind(this, rootView);
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), numberOfColumns());
+
+        if (getActivity().getIntent().hasExtra("title")) {
+            getActivity().setTitle(getActivity().getIntent().getStringExtra("title"));
+        }
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mMainAdapter = new MainAdapter(getContext());
-        mRecyclerView.setAdapter(mMainAdapter);
-        getLoaderManager().initLoader(RECIPE_LOADER_ID, null, this);
+        mStepAdapter = new StepAdapter(getContext());
+        mRecyclerView.setAdapter(mStepAdapter);
+        getLoaderManager().initLoader(LOADER_ID, null, this);
         return rootView;
-    }
-
-    private int numberOfColumns() {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int widthDivider = 600;
-        int width = displayMetrics.widthPixels;
-        int nColumns = width / widthDivider;
-
-        return nColumns;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         switch (id) {
-            case RECIPE_LOADER_ID:
+            case LOADER_ID:
                 return new CursorLoader(getContext(),
-                        BakingContract.RecipeEntry.CONTENT_URI,
-                        MAIN_PROJECTION,
+                        BakingContract.RecipeSteps.CONTENT_URI,
+                        STEP_PROJECTION,
                         null,
                         null,
                         null);
@@ -100,20 +94,20 @@ public class MainFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            switch (loader.getId()) {
-                case RECIPE_LOADER_ID:
-                    mMainAdapter.swapCursor(data);
-                    if (data != null && data.getCount() != 0) {
-                        data.moveToFirst();
-                    }
-                    break;
-                default:
-                    throw new RuntimeException("Loader not implemented: " + loader.getId());
-            }
+        switch (loader.getId()) {
+            case LOADER_ID:
+                mStepAdapter.swapCursor(data);
+                if (data != null && data.getCount() != 0) {
+                    data.moveToFirst();
+                }
+                break;
+            default:
+                throw new RuntimeException("Loader not implemented: " + loader.getId());
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mMainAdapter.swapCursor(null);
+        mStepAdapter.swapCursor(null);
     }
 }
