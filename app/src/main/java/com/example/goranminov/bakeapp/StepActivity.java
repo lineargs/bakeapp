@@ -23,6 +23,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class StepActivity extends AppCompatActivity {
 
     @Override

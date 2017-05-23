@@ -65,11 +65,6 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         mContext = context;
     }
 
-    @Override
-    public void onViewRecycled(StepViewHolder holder) {
-        holder.releasePlayer();
-    }
-
     /**
      * This gets called when each new ViewHolder is created. This happens when the RecyclerView
      * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
@@ -97,7 +92,14 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     @Override
     public void onBindViewHolder(StepAdapter.StepViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        holder.initializePlayer(Uri.parse(mCursor.getString(StepFragment.INDEX_STEP_VIDEO)));
+        String stepDescription = mCursor.getString(StepFragment.INDEX_STEP_VIDEO);
+
+        if (stepDescription.equals(null)) {
+            holder.mPlayerView.setVisibility(View.INVISIBLE);
+        } else {
+            holder.initializePlayer(Uri.parse(stepDescription));
+        }
+        holder.mStepDescription.setText(mCursor.getString(StepFragment.INDEX_STEP_DESCRIPTION));
     }
 
     /*
@@ -134,9 +136,11 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         }
 
         private void releasePlayer() {
-            mExoPlayer.stop();
-            mExoPlayer.release();
-            mExoPlayer = null;
+            if (mExoPlayer != null) {
+                mExoPlayer.stop();
+                mExoPlayer.release();
+                mExoPlayer = null;
+            }
         }
     }
 
@@ -147,8 +151,8 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
      */
     @Override
     public int getItemCount() {
-
-        return 1;
+        if (mCursor == null) return 0;
+        return mCursor.getCount();
     }
 
     /**

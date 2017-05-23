@@ -39,19 +39,19 @@
     <include layout="@layout/content_step" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_arrow_forward_black_24px" />
-
-    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_previous"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_arrow_back_black_24px" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_arrow_forward_black_24px" />
 
 </android.support.design.widget.CoordinatorLayout>
