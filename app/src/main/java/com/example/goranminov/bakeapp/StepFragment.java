@@ -26,7 +26,10 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,7 +49,7 @@ import butterknife.ButterKnife;
 public class StepFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>{
 
-    @BindView(R.id.step_recycler_view) RecyclerView mRecyclerView;
+    @BindView(R.id.step_recycler_view) ExoPlayerStepRecyclerView mRecyclerView;
     private StepAdapter mStepAdapter;
 
     private static final int LOADER_ID = 29;
@@ -60,7 +63,7 @@ public class StepFragment extends Fragment implements
     public static final int INDEX_STEP_VIDEO = 1;
 
     private Uri mUri;
-    private int mStepId;
+    private int mCurrentItem = 0;
 
     public StepFragment() {}
 
@@ -70,18 +73,21 @@ public class StepFragment extends Fragment implements
         ButterKnife.bind(this, rootView);
 
         if (getActivity().getIntent().hasExtra("title") &&
+                getActivity().getIntent().getData() != null &&
                 getActivity().getIntent().hasExtra("step_id")) {
-            mStepId = Integer.parseInt(getActivity().getIntent().getStringExtra("step_id"));
             getActivity().setTitle(getActivity().getIntent().getStringExtra("title"));
-        }
-
-        if (getActivity().getIntent().getData() != null) {
             mUri = getActivity().getIntent().getData();
+            mCurrentItem = Integer.parseInt(getActivity().getIntent().getStringExtra("step_id"));
+        } else {
+            throw new NullPointerException("URI and title cannot be null");
         }
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager
+                (getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
+        SnapHelper helper = new PagerSnapHelper();
+        helper.attachToRecyclerView(mRecyclerView);
         mStepAdapter = new StepAdapter(getContext());
         mRecyclerView.setAdapter(mStepAdapter);
         getLoaderManager().initLoader(LOADER_ID, null, this);
@@ -93,9 +99,6 @@ public class StepFragment extends Fragment implements
 
         switch (id) {
             case LOADER_ID:
-//                String recipeId = mUri.getLastPathSegment();
-//                String stepId = String.valueOf(mStepId);
-//                String[] selectionArguments = new String[]{stepId, recipeId};
                 return new CursorLoader(getContext(),
                         BakingContract.RecipeSteps.buildStepUriWithId
                                 (Long.parseLong
@@ -104,13 +107,6 @@ public class StepFragment extends Fragment implements
                         null,
                         null,
                         null);
-//                return new CursorLoader(getContext(),
-//                        BakingContract.RecipeSteps.CONTENT_URI,
-//                        STEP_PROJECTION,
-//                        BakingContract.RecipeSteps.COLUMN_STEP_ID + " = ? AND " +
-//                                BakingContract.RecipeSteps.COLUMN_RECIPE_ID + " = ? ",
-//                        selectionArguments,
-//                        null);
             default:
                 throw new RuntimeException("Loader not implemented: " + id);
         }
@@ -121,9 +117,7 @@ public class StepFragment extends Fragment implements
         switch (loader.getId()) {
             case LOADER_ID:
                 mStepAdapter.swapCursor(data);
-                if (data != null && data.getCount() != 0) {
-                    data.moveToFirst();
-                }
+                mRecyclerView.smoothScrollToPosition(mCurrentItem);
                 break;
             default:
                 throw new RuntimeException("Loader not implemented: " + loader.getId());

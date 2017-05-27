@@ -16,20 +16,30 @@
 
 package com.example.goranminov.bakeapp;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.goranminov.bakeapp.utils.RetrofitCall;
 
+
+
 public class MainActivity extends AppCompatActivity {
 
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (sharedPreferences.getBoolean(getString(R.string.pref_first_key), true)) {
+            Log.v("MainActivity", "Call to network");
             RetrofitCall.getRecipes(this);
+            sharedPreferences.edit().putBoolean(getString(R.string.pref_first_key), false).apply();
         }
     }
 }

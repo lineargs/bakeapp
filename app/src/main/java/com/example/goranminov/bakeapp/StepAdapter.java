@@ -26,12 +26,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.goranminov.bakeapp.data.BakingContract;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -52,11 +54,9 @@ import butterknife.ButterKnife;
  */
 
 public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder> {
+
     private final Context mContext;
     private Cursor mCursor;
-
-    private SimpleExoPlayer mExoPlayer;
-    private SimpleExoPlayerView mPlayerView;
 
     /**
      * Creates a StepAdapter.
@@ -92,13 +92,8 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     @Override
     public void onBindViewHolder(StepAdapter.StepViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        String stepDescription = mCursor.getString(StepFragment.INDEX_STEP_VIDEO);
 
-        if (stepDescription.equals(null)) {
-            holder.mPlayerView.setVisibility(View.INVISIBLE);
-        } else {
-            holder.initializePlayer(Uri.parse(stepDescription));
-        }
+
         holder.mStepDescription.setText(mCursor.getString(StepFragment.INDEX_STEP_DESCRIPTION));
     }
 
@@ -106,41 +101,14 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
      * Cache of the children views.
      */
     class StepViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.exoplayer_video_layout)
+        FrameLayout mExoPlayerContainer;
         @BindView(R.id.step_section_label)
         TextView mStepDescription;
-        private SimpleExoPlayer mExoPlayer;
-        private SimpleExoPlayerView mPlayerView;
 
         StepViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.step_player_view);
-        }
-
-        private void initializePlayer(Uri mediaUri) {
-            if (mExoPlayer == null) {
-                // Create an instance of the ExoPlayer.
-                TrackSelector trackSelector = new DefaultTrackSelector();
-                LoadControl loadControl = new DefaultLoadControl();
-                mExoPlayer = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(mContext),
-                        trackSelector, loadControl);
-                mPlayerView.setPlayer(mExoPlayer);
-
-                // Prepare the MediaSource.
-                String userAgent = Util.getUserAgent(mContext, "BakeApp");
-                MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
-                        mContext, userAgent), new DefaultExtractorsFactory(), null, null);
-                mExoPlayer.prepare(mediaSource);
-//                mExoPlayer.setPlayWhenReady(true);
-            }
-        }
-
-        private void releasePlayer() {
-            if (mExoPlayer != null) {
-                mExoPlayer.stop();
-                mExoPlayer.release();
-                mExoPlayer = null;
-            }
         }
     }
 
