@@ -29,6 +29,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.goranminov.bakeapp.data.BakingContract;
+import com.squareup.picasso.Picasso;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,10 +81,18 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.RecipeViewHolder>{
     @Override
     public void onBindViewHolder(final RecipeViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        holder.recipeImage.setImageResource(R.drawable.baking);
+        if (mCursor.getString(MainFragment.INDEX_RECIPE_IMAGE).equals("")) {
+            holder.recipeImage.setImageResource(R.drawable.ic_broken_image);
+        } else {
+            Picasso.with(holder.recipeImage.getContext())
+                    .load(mCursor.getString(MainFragment.INDEX_RECIPE_IMAGE))
+                    .centerInside()
+                    .fit()
+                    .into(holder.recipeImage);
+        }
         holder.recipeName.setText(mCursor.getString(MainFragment.INDEX_RECIPE_NAME));
         holder.recipeServings.setText
-                (String.format("Serving: %d", mCursor.getInt(MainFragment.INDEX_RECIPE_SERVINGS)));
+                (String.format(Locale.getDefault(), "Serving: %d", mCursor.getInt(MainFragment.INDEX_RECIPE_SERVINGS)));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

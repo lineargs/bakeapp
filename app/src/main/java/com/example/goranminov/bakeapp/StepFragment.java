@@ -72,7 +72,6 @@ public class StepFragment extends Fragment implements
         if (getActivity().getIntent().hasExtra("title") &&
                 getActivity().getIntent().hasExtra("step_id")) {
             mStepId = Integer.parseInt(getActivity().getIntent().getStringExtra("step_id"));
-            Log.v("StepId ", getActivity().getIntent().getStringExtra("step_id"));
             getActivity().setTitle(getActivity().getIntent().getStringExtra("title"));
         }
 
@@ -80,7 +79,7 @@ public class StepFragment extends Fragment implements
             mUri = getActivity().getIntent().getData();
         }
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
         mStepAdapter = new StepAdapter(getContext());
@@ -94,17 +93,24 @@ public class StepFragment extends Fragment implements
 
         switch (id) {
             case LOADER_ID:
-                String recipeId = mUri.getLastPathSegment();
-                String stepId = String.valueOf(mStepId);
-                Log.v("String stepId", stepId);
-                String[] selectionArguments = new String[]{stepId, recipeId};
+//                String recipeId = mUri.getLastPathSegment();
+//                String stepId = String.valueOf(mStepId);
+//                String[] selectionArguments = new String[]{stepId, recipeId};
                 return new CursorLoader(getContext(),
-                        BakingContract.RecipeSteps.CONTENT_URI,
+                        BakingContract.RecipeSteps.buildStepUriWithId
+                                (Long.parseLong
+                                        (mUri.getLastPathSegment())),
                         STEP_PROJECTION,
-                        BakingContract.RecipeSteps.COLUMN_STEP_ID + " = ? AND " +
-                                BakingContract.RecipeSteps.COLUMN_RECIPE_ID + " = ? ",
-                        selectionArguments,
+                        null,
+                        null,
                         null);
+//                return new CursorLoader(getContext(),
+//                        BakingContract.RecipeSteps.CONTENT_URI,
+//                        STEP_PROJECTION,
+//                        BakingContract.RecipeSteps.COLUMN_STEP_ID + " = ? AND " +
+//                                BakingContract.RecipeSteps.COLUMN_RECIPE_ID + " = ? ",
+//                        selectionArguments,
+//                        null);
             default:
                 throw new RuntimeException("Loader not implemented: " + id);
         }

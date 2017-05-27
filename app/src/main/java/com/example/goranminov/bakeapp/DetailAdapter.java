@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.goranminov.bakeapp.data.BakingContract;
+import com.example.goranminov.bakeapp.viewpager.TabbedActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -113,7 +114,7 @@ class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     @Override
                     public void onClick(View v) {
                         stepCursor.moveToPosition(stepViewHolder.getAdapterPosition() - 1);
-                        Intent intent = new Intent(mContext, StepActivity.class);
+                        Intent intent = new Intent(mContext, TabbedActivity.class);
                         Uri uri = BakingContract.RecipeSteps
                                 .buildStepUriWithId
                                         (stepCursor.getLong(DetailFragment.INDEX_STEP_RECIPE_ID));

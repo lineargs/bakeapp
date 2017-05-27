@@ -44,8 +44,6 @@ import com.google.android.exoplayer2.util.Util;
  * Created by goranminov on 22/05/2017.
  */
     /**
-     * SwipeViews are completely finished
-     * Note that we do not use it because of the Project Specification
      *
      * A placeholder fragment containing a simple view.
      */
@@ -83,8 +81,6 @@ import com.google.android.exoplayer2.util.Util;
             View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.playerView);
-            mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource
-                    (getResources(), R.drawable.question_mark));
             initializePlayer(Uri.parse(getArguments().getString(ARG_VIDEO)));
             textView.setText(getArguments().getString(ARG_DESCRIPTION));
             return rootView;

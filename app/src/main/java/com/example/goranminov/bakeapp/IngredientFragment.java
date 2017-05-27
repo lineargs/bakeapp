@@ -68,12 +68,12 @@ public class IngredientFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_ingredients, container, false);
         ButterKnife.bind(this, rootView);
 
-        if (getActivity().getIntent().getData() == null) {
-            throw new NullPointerException("URI cannot be null");
-        } else {
+        if (getActivity().getIntent().getData() != null) {
             mUri = getActivity().getIntent().getData();
-            Log.v("Uri: ", mUri.toString());
+        } else {
+            throw new NullPointerException("URI cannot be null");
         }
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setHasFixedSize(true);

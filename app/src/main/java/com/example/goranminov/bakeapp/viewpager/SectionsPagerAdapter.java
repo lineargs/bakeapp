@@ -27,8 +27,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  */
 
     /**
-     * SwipeViews are completely finished
-     * Note that we do not use it because of the Project Specification
      *
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -60,4 +58,5 @@ import android.support.v4.app.FragmentStatePagerAdapter;
             mCursor = cursor;
             notifyDataSetChanged();
         }
+
     }

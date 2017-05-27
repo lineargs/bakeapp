@@ -17,6 +17,7 @@
 package com.example.goranminov.bakeapp.viewpager;
 
 import android.database.Cursor;
+import android.media.session.MediaController;
 import android.net.Uri;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -31,9 +32,7 @@ import android.os.Bundle;
 import com.example.goranminov.bakeapp.R;
 import com.example.goranminov.bakeapp.data.BakingContract;
 import com.example.goranminov.bakeapp.viewpager.SectionsPagerAdapter;
- /** SwipeViews are completely finished
-  * Note that we do not use it because of the Project Specification
-  */
+
 public class TabbedActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -53,6 +52,8 @@ public class TabbedActivity extends AppCompatActivity
     private ViewPager mViewPager;
     private Uri mUri;
     private int mCurrentItem = 0;
+
+
 
     private static final int LOADER_ID = 101;
 
@@ -75,14 +76,17 @@ public class TabbedActivity extends AppCompatActivity
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        if (getIntent().getData() == null) {
-            throw new NullPointerException("URI cannot be null");
-        } else {
+        if (getIntent().getData() != null &&
+                getIntent().hasExtra("step_id") &&
+                getIntent().hasExtra("title")) {
             mUri = getIntent().getData();
+            mCurrentItem = Integer.parseInt(getIntent().getStringExtra("step_id"));
+            setTitle(getIntent().getStringExtra("title"));
+
+        } else {
+            throw new NullPointerException("URI, title and step_id cannot be null");
         }
-        if (getIntent().hasExtra("position")) {
-            mCurrentItem = Integer.parseInt(getIntent().getStringExtra("position"));
-        }
+
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);

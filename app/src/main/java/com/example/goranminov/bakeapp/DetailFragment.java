@@ -77,15 +77,14 @@ public class DetailFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
 
-        if (getActivity().getIntent().hasExtra("title")) {
+        if (getActivity().getIntent().hasExtra("title") &&
+                getActivity().getIntent().getData() != null) {
             getActivity().setTitle(getActivity().getIntent().getStringExtra("title"));
+            mRecipeUri = getActivity().getIntent().getData();
+        } else {
+            throw new NullPointerException("URI and title cannot be null");
         }
 
-        if (getActivity().getIntent().getData() == null) {
-            throw new NullPointerException("URI cannot be null");
-        } else {
-            mRecipeUri = getActivity().getIntent().getData();
-        }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setHasFixedSize(true);

@@ -29,6 +29,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.goranminov.bakeapp.data.BakingContract;
 
@@ -44,6 +45,8 @@ public class MainFragment extends Fragment implements
 
     @BindView(R.id.main_recycler_view) RecyclerView mRecyclerView;
     private MainAdapter mMainAdapter;
+    @BindView(R.id.loading_data_progress_bar)
+    ProgressBar mLoadingData;
 
     private static final int RECIPE_LOADER_ID = 29;
 
@@ -51,11 +54,13 @@ public class MainFragment extends Fragment implements
             BakingContract.RecipeEntry.COLUMN_NAME,
             BakingContract.RecipeEntry.COLUMN_RECIPE_ID,
             BakingContract.RecipeEntry.COLUMN_SERVINGS,
+            BakingContract.RecipeEntry.COLUMN_IMAGE
     };
 
     public static final int INDEX_RECIPE_NAME = 0;
     public static final int INDEX_RECIPE_ID = 1;
     public static final int INDEX_RECIPE_SERVINGS = 2;
+    public static final int INDEX_RECIPE_IMAGE = 3;
 
     public MainFragment() {}
 
@@ -68,6 +73,7 @@ public class MainFragment extends Fragment implements
         mRecyclerView.setHasFixedSize(true);
         mMainAdapter = new MainAdapter(getContext());
         mRecyclerView.setAdapter(mMainAdapter);
+        showLoading();
         getLoaderManager().initLoader(RECIPE_LOADER_ID, null, this);
         return rootView;
     }
@@ -106,6 +112,7 @@ public class MainFragment extends Fragment implements
                     if (data != null && data.getCount() != 0) {
                         data.moveToFirst();
                     }
+                    if (data.getCount() != 0) showData();
                     break;
                 default:
                     throw new RuntimeException("Loader not implemented: " + loader.getId());
@@ -115,5 +122,27 @@ public class MainFragment extends Fragment implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mMainAdapter.swapCursor(null);
+    }
+
+    /*
+     * Method used to set the loading indicator as invisible and the RecyclerView
+     * as visible.
+     */
+    private void showData() {
+        /* First, hide the loading indicator */
+        mLoadingData.setVisibility(View.INVISIBLE);
+        /* Finally, make sure the data is visible */
+        mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    /*
+     * Method used to set the loading indicator as visible and the RecyclerView
+     * as invisible.
+     */
+    private void showLoading() {
+        /* Then, hide the data */
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        /* Finally, show the loading indicator */
+        mLoadingData.setVisibility(View.VISIBLE);
     }
 }
