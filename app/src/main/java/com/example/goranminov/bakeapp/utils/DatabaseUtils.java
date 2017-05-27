@@ -58,6 +58,7 @@ class DatabaseUtils {
         ContentValues[] stepsContentValues = new ContentValues[1];
         ContentValues stepsValues = new ContentValues();
         stepsValues.put(BakingContract.RecipeSteps.COLUMN_RECIPE_ID, bakingRecipes.getId());
+        stepsValues.put(BakingContract.RecipeSteps.COLUMN_NAME, bakingRecipes.getName());
         stepsValues.put(BakingContract.RecipeSteps.COLUMN_STEP_ID, step.getId());
         stepsValues.put(BakingContract.RecipeSteps.COLUMN_SHORT_DESCRIPTION, step.getShortDescription());
         stepsValues.put(BakingContract.RecipeSteps.COLUMN_DESCRIPTION, step.getDescription());

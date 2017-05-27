@@ -170,6 +170,9 @@ public class BakingContract {
         /* The recipe ID as returned by API*/
         public static final String COLUMN_RECIPE_ID = "recipe_id";
 
+        /* The recipe name as returned by API*/
+        public static final String COLUMN_NAME = "name";
+
         /* The step ID as returned by API*/
         public static final String COLUMN_STEP_ID = "step_id";
 

@@ -36,7 +36,7 @@ public class BakingDbHelper extends SQLiteOpenHelper {
      * If you change the database schema, you must increment the database version or the onUpgrade
      * method will not be called.
      */
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     public BakingDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -111,6 +111,8 @@ public class BakingDbHelper extends SQLiteOpenHelper {
                         BakingContract.RecipeSteps._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
                         BakingContract.RecipeSteps.COLUMN_RECIPE_ID + " INTEGER NOT NULL, " +
+
+                        BakingContract.RecipeSteps.COLUMN_NAME + " TEXT NOT NULL, " +
 
                         BakingContract.RecipeSteps.COLUMN_STEP_ID + " INTEGER NOT NULL, " +
 

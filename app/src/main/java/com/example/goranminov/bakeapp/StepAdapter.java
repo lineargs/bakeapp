@@ -23,6 +23,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,8 +93,13 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     @Override
     public void onBindViewHolder(StepAdapter.StepViewHolder holder, int position) {
         mCursor.moveToPosition(position);
+        if (holder instanceof StepViewHolder) {
+            setExoPlayerViewHolder(holder);
+        }
+    }
 
-
+    private void setExoPlayerViewHolder (StepViewHolder holder) {
+        holder.parent.setTag(holder);
         holder.mStepDescription.setText(mCursor.getString(StepFragment.INDEX_STEP_DESCRIPTION));
     }
 
@@ -105,9 +111,11 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         FrameLayout mExoPlayerContainer;
         @BindView(R.id.step_section_label)
         TextView mStepDescription;
+        View parent;
 
         StepViewHolder(View view) {
             super(view);
+            parent = view;
             ButterKnife.bind(this, view);
         }
     }

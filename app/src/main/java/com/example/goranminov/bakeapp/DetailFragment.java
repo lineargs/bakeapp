@@ -61,12 +61,14 @@ public class DetailFragment extends Fragment implements
     public static final String[] DETAIL_STEP_PROJECTION = {
             BakingContract.RecipeSteps.COLUMN_RECIPE_ID,
             BakingContract.RecipeSteps.COLUMN_SHORT_DESCRIPTION,
-            BakingContract.RecipeSteps.COLUMN_STEP_ID
+            BakingContract.RecipeSteps.COLUMN_STEP_ID,
+            BakingContract.RecipeSteps.COLUMN_NAME
     };
 
     public static final int INDEX_STEP_RECIPE_ID = 0;
     public static final int INDEX_SHORT_DESCRIPTION = 1;
     public static final int INDEX_STEP_ID = 2;
+    public static final int INDEX_STEP_NAME = 3;
 
     private Uri mRecipeUri;
 

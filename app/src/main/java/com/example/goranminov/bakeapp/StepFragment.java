@@ -19,6 +19,7 @@ package com.example.goranminov.bakeapp;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -118,6 +119,7 @@ public class StepFragment extends Fragment implements
             case LOADER_ID:
                 mStepAdapter.swapCursor(data);
                 mRecyclerView.smoothScrollToPosition(mCurrentItem);
+                mRecyclerView.playVideo();
                 break;
             default:
                 throw new RuntimeException("Loader not implemented: " + loader.getId());
@@ -131,6 +133,21 @@ public class StepFragment extends Fragment implements
 
     @Override
     public void onDestroy() {
+
+        if (mRecyclerView != null) {
+            mRecyclerView.setAdapter(null);
+            mRecyclerView.onRelease();
+            mRecyclerView = null;
+        }
+
         super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mRecyclerView != null) {
+            mRecyclerView.onPausePlayer();
+        }
     }
 }

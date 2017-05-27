@@ -119,7 +119,7 @@ class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                                 .buildStepUriWithId
                                         (stepCursor.getLong(DetailFragment.INDEX_STEP_RECIPE_ID));
                         intent.setData(uri);
-                        intent.putExtra("title", stepCursor.getString(DetailFragment.INDEX_RECIPE_NAME));
+                        intent.putExtra("title", stepCursor.getString(DetailFragment.INDEX_STEP_NAME));
                         intent.putExtra("step_id", stepCursor.getString(DetailFragment.INDEX_STEP_ID));
                         mContext.startActivity(intent);
                     }
