@@ -98,7 +98,7 @@ public class ExoPlayerStepRecyclerView extends RecyclerView {
         // get target View targetPosition in RecyclerView
         int at = targetPosition - ((LinearLayoutManager) getLayoutManager()).findFirstVisibleItemPosition();
 
-        View child = getChildAt(targetPosition);
+        View child = getChildAt(at);
         if (child == null) {
             return;
         }
@@ -114,7 +114,7 @@ public class ExoPlayerStepRecyclerView extends RecyclerView {
         addedVideo = true;
         rowParent = holder.parent;
 
-        mExoPlayerView.initializePlayer(mContext);
+        mExoPlayerView.initialize(getContext());
 
     }
 
@@ -128,8 +128,10 @@ public class ExoPlayerStepRecyclerView extends RecyclerView {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                playVideo();
-                Log.v("ScrollState", "Scroll State Changed");
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    playVideo();
+                    Log.v("ScrollState", "Scroll State Changed");
+                }
             }
 
             @Override
@@ -189,28 +191,15 @@ public class ExoPlayerStepRecyclerView extends RecyclerView {
         }
     }
 
-    public void onPausePlayer() {
-        if (mExoPlayerView != null) {
-            removeVideoView(mExoPlayerView);
-            mExoPlayerView.releasePlayer();
-            mExoPlayerView = null;
-        }
-    }
-
-    public void onRestartPlayer() {
-        if (mExoPlayerView == null) {
-            playPosition = -1;
-            mExoPlayerView = ExoPlayerView.getInstance(mContext);
-            playVideo();
-        }
+    public void onInitialize() {
+            mExoPlayerView.initializePlayer();
     }
 
     public void onRelease() {
         if (mExoPlayerView != null) {
-            mExoPlayerView.releasePlayer();
+            mExoPlayerView.release();
             mExoPlayerView = null;
         }
-
         rowParent = null;
     }
 }

@@ -40,6 +40,7 @@ import android.view.ViewGroup;
 import com.example.goranminov.bakeapp.data.BakingContract;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.util.Util;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -128,26 +129,38 @@ public class StepFragment extends Fragment implements
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mStepAdapter.swapCursor(null);
+
     }
 
     @Override
-    public void onDestroy() {
-
-        if (mRecyclerView != null) {
-            mRecyclerView.setAdapter(null);
+    public void onStop() {
+        super.onStop();
+        if (Util.SDK_INT > 23) {
             mRecyclerView.onRelease();
-            mRecyclerView = null;
         }
-
-        super.onDestroy();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (mRecyclerView != null) {
-            mRecyclerView.onPausePlayer();
+        if (Util.SDK_INT <= 23) {
+            mRecyclerView.onRelease();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Util.SDK_INT > 23) {
+            mRecyclerView.onInitialize();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Util.SDK_INT <= 23) {
+            mRecyclerView.onInitialize();
         }
     }
 }

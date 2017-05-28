@@ -84,6 +84,9 @@ public class MainFragment extends Fragment implements
         int widthDivider = 600;
         int width = displayMetrics.widthPixels;
         int nColumns = width / widthDivider;
+        if (nColumns == 2) {
+            return 1;
+        }
 
         return nColumns;
     }

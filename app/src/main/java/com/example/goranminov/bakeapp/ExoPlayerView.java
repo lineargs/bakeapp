@@ -16,18 +16,14 @@
 
 package com.example.goranminov.bakeapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Point;
 import android.net.Uri;
-import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
-import android.util.AttributeSet;
-import android.view.Display;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -35,55 +31,51 @@ import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
-import com.google.android.exoplayer2.audio.AudioCapabilities;
-import com.google.android.exoplayer2.audio.AudioCapabilitiesReceiver;
+import com.google.android.exoplayer2.audio.AudioRendererEventListener;
+import com.google.android.exoplayer2.decoder.DecoderCounters;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
-import com.google.android.exoplayer2.video.MediaCodecVideoRenderer;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.video.VideoRendererEventListener;
+
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 
 /**
  * Created by goranminov on 27/05/2017.
  */
 
-public class ExoPlayerView extends FrameLayout implements
-        ExoPlayer.EventListener,
-        AudioCapabilitiesReceiver.Listener,
-        View.OnClickListener{
+public class ExoPlayerView extends FrameLayout {
 
-    private Uri mCurrentUri;
+    private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
+    private static final String TAG = "PlayerActivity";
+    private ComponentListener componentListener;
 
-    private SimpleExoPlayer mExoPlayer;
-    private SimpleExoPlayerView mPlayerView;
+    private SimpleExoPlayer player;
+    private SimpleExoPlayerView playerView;
+    private long playbackPosition;
+    private int currentWindow;
+    private boolean playWhenReady = true;
 
     private Context mContext;
+    private Uri mCurrentUri;
 
     private static ExoPlayerView instance;
 
     public ExoPlayerView(@NonNull Context context) {
         super(context);
-        initialize(context);
-    }
-
-    public ExoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        initialize(context);
-    }
-
-    public ExoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
         initialize(context);
     }
 
@@ -97,29 +89,64 @@ public class ExoPlayerView extends FrameLayout implements
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.addView(inflater.inflate(R.layout.exoplayer_step, null));
 
+        componentListener = new ComponentListener();
 
-        mPlayerView = (SimpleExoPlayerView) this.findViewById(R.id.step_player_view);
-        initializePlayer(context);
+        playerView = (SimpleExoPlayerView) this.findViewById(R.id.step_player_view);
+        initializePlayer();
     }
 
-    public void initializePlayer(Context context) {
-        if (mExoPlayer == null) {
-            // Create an instance of the ExoPlayer.
-            TrackSelector trackSelector = new DefaultTrackSelector();
-            LoadControl loadControl = new DefaultLoadControl();
-            mExoPlayer = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(mContext),
-                    trackSelector, loadControl);
-            mPlayerView.setPlayer(mExoPlayer);
+    public void initializePlayer() {
+        if (player == null) {
+            TrackSelection.Factory adaptiveTrackSelectionFactory =
+                    new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
+            player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(mContext),
+                    new DefaultTrackSelector(adaptiveTrackSelectionFactory),
+                    new DefaultLoadControl());
+            player.addListener(componentListener);
+            player.setVideoDebugListener(componentListener);
+            player.setAudioDebugListener(componentListener);
+            playerView.setPlayer(player);
+            player.setPlayWhenReady(playWhenReady);
+            player.seekTo(currentWindow, playbackPosition);
+        }
+        MediaSource mediaSource = buildMediaSource(Uri.parse("https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd974_-intro-creampie/-intro-creampie.mp4"));
+        player.prepare(mediaSource, true, false);
+    }
 
-            mExoPlayer.addListener(this);
-            // Prepare the MediaSource.
-            String userAgent = Util.getUserAgent(mContext, "BakeApp");
-            MediaSource mediaSource = new ExtractorMediaSource(Uri.parse("https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd974_-intro-creampie/-intro-creampie.mp4"), new DefaultDataSourceFactory(
-                    mContext, userAgent), new DefaultExtractorsFactory(), null, null);
-            mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
+    private void releasePlayer() {
+        if (player != null) {
+            playbackPosition = player.getCurrentPosition();
+            currentWindow = player.getCurrentWindowIndex();
+            playWhenReady = player.getPlayWhenReady();
+            player.removeListener(componentListener);
+            player.setVideoListener(null);
+            player.setVideoDebugListener(null);
+            player.setAudioDebugListener(null);
+            player.release();
+            player = null;
         }
     }
+    public void release() {
+        releasePlayer();
+        instance = null;
+    }
+
+    private MediaSource buildMediaSource(Uri uri) {
+        return new ExtractorMediaSource(uri,
+                new DefaultHttpDataSourceFactory("ua"),
+                new DefaultExtractorsFactory(), null, null);
+    }
+
+    @SuppressLint("InlinedApi")
+    private void hideSystemUi() {
+        playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+    }
+
 
     public static ExoPlayerView getInstance(Context context) {
         if (instance != null) {
@@ -130,71 +157,123 @@ public class ExoPlayerView extends FrameLayout implements
         }
     }
 
-    public void releasePlayer() {
-        if (mExoPlayer != null) {
-            mExoPlayer.stop();
-            mExoPlayer.release();
-            mExoPlayer = null;
-            instance = null;
+    private class ComponentListener implements ExoPlayer.EventListener, VideoRendererEventListener, AudioRendererEventListener {
+        @Override
+        public void onTimelineChanged(Timeline timeline, Object manifest) {
+
         }
-    }
 
-    @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest) {
+        @Override
+        public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
 
-    }
-
-    @Override
-    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-
-    }
-
-    @Override
-    public void onLoadingChanged(boolean isLoading) {
-
-    }
-
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        switch (playbackState) {
-            case ExoPlayer.STATE_BUFFERING:
-                mPlayerView.setAlpha(0);
-                mPlayerView.setOnClickListener(null);
-                break;
-            case ExoPlayer.STATE_ENDED:
-                mExoPlayer.seekTo(0);
-                break;
-            case ExoPlayer.STATE_IDLE:
-                break;
-            case ExoPlayer.STATE_READY:
-                mPlayerView.setOnClickListener(ExoPlayerView.this);
-                mPlayerView.setAlpha(1);
-                break;
         }
-    }
 
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {
+        @Override
+        public void onLoadingChanged(boolean isLoading) {
 
-    }
+        }
 
-    @Override
-    public void onPositionDiscontinuity() {
+        @Override
+        public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+            String stateString;
+            switch (playbackState) {
+                case ExoPlayer.STATE_IDLE:
+                    stateString = "ExoPlayer.STATE_IDLE      -";
+                    break;
+                case ExoPlayer.STATE_BUFFERING:
+                    stateString = "ExoPlayer.STATE_BUFFERING -";
+                    break;
+                case ExoPlayer.STATE_READY:
+                    stateString = "ExoPlayer.STATE_READY     -";
+                    break;
+                case ExoPlayer.STATE_ENDED:
+                    stateString = "ExoPlayer.STATE_ENDED     -";
+                    break;
+                default:
+                    stateString = "UNKNOWN_STATE             -";
+                    break;
+            }
+            Log.d(TAG, "changed state to " + stateString + " playWhenReady: " + playWhenReady);
+        }
 
-    }
+        @Override
+        public void onPlayerError(ExoPlaybackException error) {
 
-    @Override
-    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+        }
 
-    }
+        @Override
+        public void onPositionDiscontinuity() {
 
-    @Override
-    public void onAudioCapabilitiesChanged(AudioCapabilities audioCapabilities) {
+        }
 
-    }
+        @Override
+        public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
 
-    @Override
-    public void onClick(View v) {
-        mExoPlayer.setPlayWhenReady(!mExoPlayer.getPlayWhenReady());
+        }
+
+        @Override
+        public void onVideoEnabled(DecoderCounters counters) {
+
+        }
+
+        @Override
+        public void onVideoDecoderInitialized(String decoderName, long initializedTimestampMs, long initializationDurationMs) {
+
+        }
+
+        @Override
+        public void onVideoInputFormatChanged(Format format) {
+
+        }
+
+        @Override
+        public void onDroppedFrames(int count, long elapsedMs) {
+
+        }
+
+        @Override
+        public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
+
+        }
+
+        @Override
+        public void onRenderedFirstFrame(Surface surface) {
+
+        }
+
+        @Override
+        public void onVideoDisabled(DecoderCounters counters) {
+
+        }
+
+        @Override
+        public void onAudioEnabled(DecoderCounters counters) {
+
+        }
+
+        @Override
+        public void onAudioSessionId(int audioSessionId) {
+
+        }
+
+        @Override
+        public void onAudioDecoderInitialized(String decoderName, long initializedTimestampMs, long initializationDurationMs) {
+
+        }
+
+        @Override
+        public void onAudioInputFormatChanged(Format format) {
+
+        }
+
+        @Override
+        public void onAudioTrackUnderrun(int bufferSize, long bufferSizeMs, long elapsedSinceLastFeedMs) {
+
+        }
+
+        @Override
+        public void onAudioDisabled(DecoderCounters counters) {
+
+        }
     }
 }
