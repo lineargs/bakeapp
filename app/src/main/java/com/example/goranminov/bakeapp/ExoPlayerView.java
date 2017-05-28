@@ -82,10 +82,6 @@ public class ExoPlayerView extends FrameLayout {
     protected void initialize(Context context) {
         mContext = context.getApplicationContext();
 
-//        Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-//        Point point = new Point();
-//        display.getSize(point);
-
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.addView(inflater.inflate(R.layout.exoplayer_step, null));
 
@@ -115,8 +111,8 @@ public class ExoPlayerView extends FrameLayout {
 
     private void releasePlayer() {
         if (player != null) {
-            playbackPosition = player.getCurrentPosition();
-            currentWindow = player.getCurrentWindowIndex();
+            playbackPosition = 0;
+            currentWindow = 0;
             playWhenReady = player.getPlayWhenReady();
             player.removeListener(componentListener);
             player.setVideoListener(null);

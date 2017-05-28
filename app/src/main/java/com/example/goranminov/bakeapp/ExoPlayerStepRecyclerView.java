@@ -110,11 +110,11 @@ public class ExoPlayerStepRecyclerView extends RecyclerView {
             return;
         }
 
-        holder.mExoPlayerContainer.addView(mExoPlayerView);
+//        holder.mExoPlayerContainer.addView(mExoPlayerView);
         addedVideo = true;
-        rowParent = holder.parent;
+//        rowParent = holder.parent;
 
-        mExoPlayerView.initialize(getContext());
+        initialize(getContext());
 
     }
 

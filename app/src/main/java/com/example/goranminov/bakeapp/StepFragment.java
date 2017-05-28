@@ -49,9 +49,9 @@ import butterknife.ButterKnife;
  * A placeholder fragment containing a simple view.
  */
 public class StepFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor>{
+        LoaderManager.LoaderCallbacks<Cursor> {
 
-    @BindView(R.id.step_recycler_view) ExoPlayerStepRecyclerView mRecyclerView;
+    @BindView(R.id.step_recycler_view) RecyclerView mRecyclerView;
     private StepAdapter mStepAdapter;
 
     private static final int LOADER_ID = 29;
@@ -120,7 +120,6 @@ public class StepFragment extends Fragment implements
             case LOADER_ID:
                 mStepAdapter.swapCursor(data);
                 mRecyclerView.smoothScrollToPosition(mCurrentItem);
-                mRecyclerView.playVideo();
                 break;
             default:
                 throw new RuntimeException("Loader not implemented: " + loader.getId());
@@ -136,7 +135,7 @@ public class StepFragment extends Fragment implements
     public void onStop() {
         super.onStop();
         if (Util.SDK_INT > 23) {
-            mRecyclerView.onRelease();
+//            mRecyclerView.onRelease();
         }
     }
 
@@ -144,7 +143,7 @@ public class StepFragment extends Fragment implements
     public void onPause() {
         super.onPause();
         if (Util.SDK_INT <= 23) {
-            mRecyclerView.onRelease();
+//            mRecyclerView.onRelease();
         }
     }
 
@@ -152,7 +151,7 @@ public class StepFragment extends Fragment implements
     public void onStart() {
         super.onStart();
         if (Util.SDK_INT > 23) {
-            mRecyclerView.onInitialize();
+//            mRecyclerView.onInitialize();
         }
     }
 
@@ -160,7 +159,7 @@ public class StepFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         if (Util.SDK_INT <= 23) {
-            mRecyclerView.onInitialize();
+//            mRecyclerView.onInitialize();
         }
     }
 }
