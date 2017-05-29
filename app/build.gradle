@@ -6,7 +6,7 @@ android {
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
         applicationId "com.example.goranminov.bakeapp"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -35,6 +35,8 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'com.google.android.exoplayer:exoplayer:r2.4.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.github.danylovolokh:video-player-manager:0.2.0'
+    compile 'com.github.danylovolokh:list-visibility-utils:0.2.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     debugCompile 'com.amitshekhar.android:debug-db:1.0.0'

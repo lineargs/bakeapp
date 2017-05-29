@@ -106,13 +106,23 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(StepAdapter.StepViewHolder holder, int position) {
+    public void onBindViewHolder(final StepAdapter.StepViewHolder holder, int position) {
         mCursor.moveToPosition(position);
         holder.mStepDescription.setText(mCursor.getString(StepFragment.INDEX_STEP_DESCRIPTION));
         holder.playerView.setDefaultArtwork(BitmapFactory.decodeResource
                 (Resources.getSystem(), R.drawable.question_mark));
-        Uri uri = Uri.parse(mCursor.getString(StepFragment.INDEX_STEP_VIDEO));
-        holder.initializePlayer(uri);
+        final Uri uri = Uri.parse(mCursor.getString(StepFragment.INDEX_STEP_VIDEO));
+        holder.itemView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                holder.initializePlayer(uri);
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                holder.releasePlayer();
+            }
+        });
     }
 
     /*
@@ -124,7 +134,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         @BindView(R.id.step_section_label)
         TextView mStepDescription;
         private SimpleExoPlayer player;
-        private ComponentListener componentListener;
+//        private ComponentListener componentListener;
         private boolean playWhenReady = true;
         private int currentWindow;
         private long playbackPosition;
@@ -143,7 +153,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
                         new DefaultTrackSelector(adaptiveTrackSelectionFactory),
                         new DefaultLoadControl());
 //                player.addListener(componentListener);
-                player.setVideoDebugListener(componentListener);
+//                player.setVideoDebugListener(componentListener);
 //                player.setAudioDebugListener(componentListener);
                 playerView.setPlayer(player);
                 player.setPlayWhenReady(playWhenReady);
@@ -158,7 +168,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
                 playbackPosition = 0;
                 currentWindow = 0;
                 playWhenReady = player.getPlayWhenReady();
-                player.removeListener(componentListener);
+//                player.removeListener(componentListener);
                 player.setVideoListener(null);
                 player.setVideoDebugListener(null);
                 player.setAudioDebugListener(null);
@@ -171,108 +181,6 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
             return new ExtractorMediaSource(uri,
                     new DefaultHttpDataSourceFactory("ua"),
                     new DefaultExtractorsFactory(), null, null);
-        }
-
-        private class ComponentListener implements ExoPlayer.EventListener, VideoRendererEventListener, AudioRendererEventListener {
-            @Override
-            public void onTimelineChanged(Timeline timeline, Object manifest) {
-
-            }
-
-            @Override
-            public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-
-            }
-
-            @Override
-            public void onLoadingChanged(boolean isLoading) {
-
-            }
-
-            @Override
-            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-
-            }
-
-            @Override
-            public void onPlayerError(ExoPlaybackException error) {
-
-            }
-
-            @Override
-            public void onPositionDiscontinuity() {
-
-            }
-
-            @Override
-            public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-
-            }
-
-            @Override
-            public void onVideoEnabled(DecoderCounters counters) {
-
-            }
-
-            @Override
-            public void onVideoDecoderInitialized(String decoderName, long initializedTimestampMs, long initializationDurationMs) {
-
-            }
-
-            @Override
-            public void onVideoInputFormatChanged(Format format) {
-
-            }
-
-            @Override
-            public void onDroppedFrames(int count, long elapsedMs) {
-
-            }
-
-            @Override
-            public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
-
-            }
-
-            @Override
-            public void onRenderedFirstFrame(Surface surface) {
-
-            }
-
-            @Override
-            public void onVideoDisabled(DecoderCounters counters) {
-
-            }
-
-            @Override
-            public void onAudioEnabled(DecoderCounters counters) {
-
-            }
-
-            @Override
-            public void onAudioSessionId(int audioSessionId) {
-
-            }
-
-            @Override
-            public void onAudioDecoderInitialized(String decoderName, long initializedTimestampMs, long initializationDurationMs) {
-
-            }
-
-            @Override
-            public void onAudioInputFormatChanged(Format format) {
-
-            }
-
-            @Override
-            public void onAudioTrackUnderrun(int bufferSize, long bufferSizeMs, long elapsedSinceLastFeedMs) {
-
-            }
-
-            @Override
-            public void onAudioDisabled(DecoderCounters counters) {
-
-            }
         }
     }
 
