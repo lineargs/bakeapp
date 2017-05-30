@@ -16,6 +16,7 @@
 
 package com.example.goranminov.bakeapp;
 
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -39,6 +40,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.goranminov.bakeapp.data.BakingContract;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlaybackControlView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
@@ -57,6 +59,7 @@ public class StepFragment extends Fragment implements
     private StepAdapter mStepAdapter;
 
     private static final int LOADER_ID = 29;
+    private int oldOptions;
 
     public static final String[] STEP_PROJECTION = {
             BakingContract.RecipeSteps.COLUMN_DESCRIPTION,
@@ -67,7 +70,7 @@ public class StepFragment extends Fragment implements
     public static final int INDEX_STEP_VIDEO = 1;
 
     private Uri mUri;
-    private int mCurrentItem = 0;
+    private int mCurrentItem;
 
     public StepFragment() {}
 
@@ -76,27 +79,50 @@ public class StepFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_step, container, false);
         ButterKnife.bind(this, rootView);
 
-        if (getActivity().getIntent().hasExtra("title") &&
-                getActivity().getIntent().getData() != null &&
-                getActivity().getIntent().hasExtra("step_id")) {
-            getActivity().setTitle(getActivity().getIntent().getStringExtra("title"));
-            mUri = getActivity().getIntent().getData();
-            mCurrentItem = Integer.parseInt(getActivity().getIntent().getStringExtra("step_id"));
-        } else {
-            throw new NullPointerException("URI and title cannot be null");
-        }
+            if (getActivity().getIntent().hasExtra("title") &&
+                    getActivity().getIntent().getData() != null &&
+                    getActivity().getIntent().hasExtra("step_id")) {
+                getActivity().setTitle(getActivity().getIntent().getStringExtra("title"));
+                mUri = getActivity().getIntent().getData();
+                mCurrentItem = Integer.parseInt(getActivity().getIntent().getStringExtra("step_id"));
+            } else {
+                throw new NullPointerException("URI and title cannot be null");
+            }
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager
-                (getContext(), LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
-        SnapHelper helper = new PagerSnapHelper();
-        helper.attachToRecyclerView(mRecyclerView);
-        mStepAdapter = new StepAdapter(getContext());
-        mRecyclerView.setAdapter(mStepAdapter);
-        getLoaderManager().initLoader(LOADER_ID, null, this);
+            LinearLayoutManager layoutManager = new LinearLayoutManager
+                    (getContext(), LinearLayoutManager.HORIZONTAL, false);
+            mRecyclerView.setLayoutManager(layoutManager);
+            mRecyclerView.setHasFixedSize(true);
+            SnapHelper helper = new PagerSnapHelper();
+            helper.attachToRecyclerView(mRecyclerView);
+            mStepAdapter = new StepAdapter(getContext());
+            mRecyclerView.setAdapter(mStepAdapter);
+            getLoaderManager().initLoader(LOADER_ID, null, this);
         return rootView;
     }
+
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+//        {
+//            oldOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();
+//            int newOptions = oldOptions;
+//            newOptions &= ~View.SYSTEM_UI_FLAG_LOW_PROFILE;
+//            newOptions |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+//            newOptions |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+//            newOptions |= View.SYSTEM_UI_FLAG_IMMERSIVE;
+//            newOptions &= ~View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+//            getActivity().getWindow().getDecorView().setSystemUiVisibility(newOptions);
+//            ((StepActivity) getActivity()).getSupportActionBar().hide();
+//        }
+//        else
+//        {
+//            getActivity().getWindow().getDecorView().setSystemUiVisibility(oldOptions);
+//            ((StepActivity) getActivity()).getSupportActionBar().show();
+//        }
+//    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

@@ -65,6 +65,9 @@ class DatabaseUtils {
         if (step.getVideoURL() != null) {
             stepsValues.put(BakingContract.RecipeSteps.COLUMN_VIDEO, step.getVideoURL());
         }
+        if (step.getVideoURL() == null && step.getThumbnailURL() != null) {
+            stepsValues.put(BakingContract.RecipeSteps.COLUMN_VIDEO, step.getThumbnailURL());
+        }
         if (step.getThumbnailURL() != null) {
             stepsValues.put(BakingContract.RecipeSteps.COLUMN_THUMBNAIL, step.getThumbnailURL());
         }

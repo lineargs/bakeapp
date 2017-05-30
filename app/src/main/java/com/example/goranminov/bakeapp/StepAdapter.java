@@ -16,6 +16,7 @@
 
 package com.example.goranminov.bakeapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -23,12 +24,16 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -59,11 +64,13 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.UriUtil;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoRendererEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Optional;
 
 /**
  * Created by goranminov on 22/05/2017.
@@ -108,14 +115,21 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     @Override
     public void onBindViewHolder(final StepAdapter.StepViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        holder.mStepDescription.setText(mCursor.getString(StepFragment.INDEX_STEP_DESCRIPTION));
+
+        if (holder.mStepDescription != null) {
+            holder.mStepDescription.setText(mCursor.getString(StepFragment.INDEX_STEP_DESCRIPTION));
+        }
         holder.playerView.setDefaultArtwork(BitmapFactory.decodeResource
                 (Resources.getSystem(), R.drawable.question_mark));
         final Uri uri = Uri.parse(mCursor.getString(StepFragment.INDEX_STEP_VIDEO));
         holder.itemView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-                holder.initializePlayer(uri);
+                Log.v("Uri", uri.toString());
+
+                if (URLUtil.isNetworkUrl(uri.toString())) {
+                    holder.initializePlayer(uri);
+                }
             }
 
             @Override
@@ -131,7 +145,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     class StepViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.step_player_view)
         SimpleExoPlayerView playerView;
-        @BindView(R.id.step_section_label)
+        @Nullable @BindView(R.id.step_section_label)
         TextView mStepDescription;
         private SimpleExoPlayer player;
 //        private ComponentListener componentListener;
@@ -145,7 +159,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
             ButterKnife.bind(this, view);
         }
 
-        public void initializePlayer(Uri uri) {
+        private void initializePlayer(Uri uri) {
             if (player == null) {
                 TrackSelection.Factory adaptiveTrackSelectionFactory =
                         new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
@@ -165,8 +179,8 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
 
         private void releasePlayer() {
             if (player != null) {
-                playbackPosition = 0;
-                currentWindow = 0;
+                playbackPosition = player.getCurrentPosition();
+                currentWindow = player.getCurrentWindowIndex();
                 playWhenReady = player.getPlayWhenReady();
 //                player.removeListener(componentListener);
                 player.setVideoListener(null);
@@ -175,6 +189,16 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
                 player.release();
                 player = null;
             }
+        }
+
+        @SuppressLint("InlinedApi")
+        private void hideSystemUi() {
+            playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
 
         private MediaSource buildMediaSource(Uri uri) {

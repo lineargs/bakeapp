@@ -16,6 +16,7 @@
 
 package com.example.goranminov.bakeapp;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,6 +29,8 @@ import butterknife.ButterKnife;
 
 public class StepActivity extends AppCompatActivity {
 
+    private int oldOption;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,5 +39,6 @@ public class StepActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
 
 }

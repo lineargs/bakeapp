@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (sharedPreferences.getBoolean(getString(R.string.pref_first_key), true)) {
-            Log.v("MainActivity", "Call to network");
             RetrofitCall.getRecipes(this);
             sharedPreferences.edit().putBoolean(getString(R.string.pref_first_key), false).apply();
         }
