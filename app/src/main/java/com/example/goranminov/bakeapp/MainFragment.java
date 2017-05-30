@@ -83,12 +83,8 @@ public class MainFragment extends Fragment implements
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int widthDivider = 600;
         int width = displayMetrics.widthPixels;
-        int nColumns = width / widthDivider;
-        if (nColumns == 2) {
-            return 1;
-        }
 
-        return nColumns;
+        return width / widthDivider;
     }
 
     @Override
@@ -114,8 +110,8 @@ public class MainFragment extends Fragment implements
                     mMainAdapter.swapCursor(data);
                     if (data != null && data.getCount() != 0) {
                         data.moveToFirst();
+                        showData();
                     }
-                    if (data.getCount() != 0) showData();
                     break;
                 default:
                     throw new RuntimeException("Loader not implemented: " + loader.getId());

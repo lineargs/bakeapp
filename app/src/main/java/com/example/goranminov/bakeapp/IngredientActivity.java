@@ -28,7 +28,7 @@ public class IngredientActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ingredients);
+        setContentView(R.layout.content_ingredients);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
