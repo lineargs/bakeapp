@@ -18,11 +18,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.goranminov.bakeapp.StepActivity">
+    tools:context="com.example.goranminov.bakeapp.RecyclerViewSteps.StepActivity">
 
     <fragment
         android:id="@+id/fragment"
-        android:name="com.example.goranminov.bakeapp.StepFragment"
+        android:name="com.example.goranminov.bakeapp.RecyclerViewSteps.StepFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

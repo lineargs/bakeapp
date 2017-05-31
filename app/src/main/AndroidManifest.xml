@@ -55,9 +55,19 @@
                 android:value="com.example.goranminov.bakeapp.DetailActivity" />
         </activity>
         <activity
-            android:name=".StepActivity"
+            android:name=".RecyclerViewSteps.StepActivity"
             android:label="@string/title_activity_step"
             android:parentActivityName=".DetailActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.goranminov.bakeapp.DetailActivity" />
+        </activity>
+        <activity
+            android:name=".StepsActivity"
+            android:label="@string/title_activity_steps"
+            android:parentActivityName=".DetailActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -114,13 +114,10 @@ class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     @Override
                     public void onClick(View v) {
                         stepCursor.moveToPosition(stepViewHolder.getAdapterPosition() - 1);
-                        Intent intent = new Intent(mContext, StepActivity.class);
-                        Uri uri = BakingContract.RecipeSteps
-                                .buildStepUriWithId
-                                        (stepCursor.getLong(DetailFragment.INDEX_STEP_RECIPE_ID));
-                        intent.setData(uri);
+                        Intent intent = new Intent(mContext, StepsActivity.class);
                         intent.putExtra("title", stepCursor.getString(DetailFragment.INDEX_STEP_NAME));
-                        intent.putExtra("step_id", stepCursor.getString(DetailFragment.INDEX_STEP_ID));
+                        intent.putExtra("description", stepCursor.getString(DetailFragment.INDEX_STEP_DESCRIPTION));
+                        intent.putExtra("video", stepCursor.getString(DetailFragment.INDEX_STEP_VIDEO));
                         mContext.startActivity(intent);
                     }
                 });

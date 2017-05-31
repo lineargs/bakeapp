@@ -14,37 +14,26 @@
  *   limitations under the License.
  */
 
-package com.example.goranminov.bakeapp;
+package com.example.goranminov.bakeapp.RecyclerViewSteps;
 
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.support.transition.Visibility;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.goranminov.bakeapp.R;
 import com.example.goranminov.bakeapp.data.BakingContract;
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.ui.PlaybackControlView;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.exoplayer2.util.Util;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -101,28 +90,28 @@ public class StepFragment extends Fragment implements
         return rootView;
     }
 
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
-//        {
-//            oldOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();
-//            int newOptions = oldOptions;
-//            newOptions &= ~View.SYSTEM_UI_FLAG_LOW_PROFILE;
-//            newOptions |= View.SYSTEM_UI_FLAG_FULLSCREEN;
-//            newOptions |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-//            newOptions |= View.SYSTEM_UI_FLAG_IMMERSIVE;
-//            newOptions &= ~View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-//            getActivity().getWindow().getDecorView().setSystemUiVisibility(newOptions);
-//            ((StepActivity) getActivity()).getSupportActionBar().hide();
-//        }
-//        else
-//        {
-//            getActivity().getWindow().getDecorView().setSystemUiVisibility(oldOptions);
-//            ((StepActivity) getActivity()).getSupportActionBar().show();
-//        }
-//    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            oldOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();
+            int newOptions = oldOptions;
+            newOptions &= ~View.SYSTEM_UI_FLAG_LOW_PROFILE;
+            newOptions |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+            newOptions |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+            newOptions |= View.SYSTEM_UI_FLAG_IMMERSIVE;
+            newOptions &= ~View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(newOptions);
+            ((StepActivity) getActivity()).getSupportActionBar().hide();
+        }
+        else
+        {
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(oldOptions);
+            ((StepActivity) getActivity()).getSupportActionBar().show();
+        }
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
