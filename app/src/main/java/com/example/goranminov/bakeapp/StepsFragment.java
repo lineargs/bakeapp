@@ -17,6 +17,7 @@
 package com.example.goranminov.bakeapp;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
@@ -125,20 +126,18 @@ public class StepsFragment extends Fragment {
         outState.putString(DESCRIPTION, description);
     }
 
+    @TargetApi(19)
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
         {
-            oldOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();
             hideSystemUi();
             stepDescription.setVisibility(View.GONE);
         }
         else
         {
-//            getActivity().getWindow().getDecorView().setSystemUiVisibility(oldOptions);
-//            ((StepsActivity) getActivity()).getSupportActionBar().show();
             showSystemUi();
             stepDescription.setVisibility(View.VISIBLE);
         }
