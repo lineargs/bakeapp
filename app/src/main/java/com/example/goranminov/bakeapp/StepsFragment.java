@@ -20,8 +20,10 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -62,6 +64,8 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoRendererEventListener;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -234,7 +238,10 @@ public class StepsFragment extends Fragment {
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
     }
 
-    private class ComponentListener implements ExoPlayer.EventListener, VideoRendererEventListener, AudioRendererEventListener, SimpleExoPlayer.VideoListener {
+    private class ComponentListener implements ExoPlayer.EventListener,
+            VideoRendererEventListener,
+            AudioRendererEventListener,
+            SimpleExoPlayer.VideoListener {
 
         private final String TAG = ComponentListener.class.getSimpleName();
 
@@ -268,6 +275,8 @@ public class StepsFragment extends Fragment {
                     break;
                 case ExoPlayer.STATE_ENDED:
                     stateString = "ExoPlayer.STATE_ENDED   -";
+                    player.setPlayWhenReady(false);
+                    player.seekTo(0);
                     break;
                 default:
                     stateString = "UNKNOWN STATE   -";
@@ -279,7 +288,33 @@ public class StepsFragment extends Fragment {
 
         @Override
         public void onPlayerError(ExoPlaybackException error) {
+            switch (error.type) {
+                case ExoPlaybackException.TYPE_SOURCE:
+                    if (getView() != null) {
+                        Snackbar.make(getView(), error.getSourceException().getMessage(),
+                                Snackbar.LENGTH_LONG).show();
+                        playerView.setDefaultArtwork(BitmapFactory.decodeResource
+                                (getResources(), R.drawable.question_mark));
+                    }
+                    break;
+                case ExoPlaybackException.TYPE_RENDERER:
+                    if (getView() != null) {
+                        Snackbar.make(getView(), error.getRendererException().getMessage(),
+                                Snackbar.LENGTH_LONG).show();
+                        playerView.setDefaultArtwork(BitmapFactory.decodeResource
+                                (getResources(), R.drawable.question_mark));
+                    }
+                    break;
 
+                case ExoPlaybackException.TYPE_UNEXPECTED:
+                    if (getView() != null) {
+                        Snackbar.make(getView(), error.getUnexpectedException().getMessage(),
+                                Snackbar.LENGTH_LONG).show();
+                        playerView.setDefaultArtwork(BitmapFactory.decodeResource
+                                (getResources(), R.drawable.question_mark));
+                    }
+                    break;
+            }
         }
 
         @Override
@@ -361,6 +396,8 @@ public class StepsFragment extends Fragment {
         public void onAudioDisabled(DecoderCounters counters) {
 
         }
+
+
     }
 
 }
