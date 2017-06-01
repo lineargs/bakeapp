@@ -42,7 +42,9 @@ public class StepsActivity extends AppCompatActivity {
             stepsFragment.setDescription(description);
             String video = getIntent().getStringExtra("video");
             stepsFragment.setVideo(video);
-            Log.v("Video", video);
+            String title = getIntent().getStringExtra("title");
+            stepsFragment.setTitle(title);
+
             fragmentManager.beginTransaction()
                     .add(R.id.steps_container, stepsFragment)
                     .commit();

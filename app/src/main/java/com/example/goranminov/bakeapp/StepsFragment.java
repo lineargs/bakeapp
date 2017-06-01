@@ -93,11 +93,17 @@ public class StepsFragment extends Fragment {
 
     private static final String VIDEO = "video";
     private static final String DESCRIPTION = "description";
+
     private String video;
     private String description;
+    private String title;
 
     public void setVideo(String video) {
         this.video = video;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setDescription(String description) {
@@ -117,7 +123,7 @@ public class StepsFragment extends Fragment {
         }
         View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
         ButterKnife.bind(this, rootView);
-
+        getActivity().setTitle(title);
         componentListener = new ComponentListener();
         stepDescription.setText(description);
 
@@ -130,7 +136,6 @@ public class StepsFragment extends Fragment {
         outState.putString(DESCRIPTION, description);
     }
 
-    @TargetApi(19)
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

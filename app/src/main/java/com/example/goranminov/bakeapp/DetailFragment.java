@@ -16,8 +16,11 @@
 
 package com.example.goranminov.bakeapp;
 
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -41,35 +44,30 @@ import butterknife.ButterKnife;
  * A placeholder fragment containing a simple view.
  */
 public class DetailFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
-
-    @BindView(R.id.detail_recycler_view)
-    RecyclerView mRecyclerView;
-    private DetailAdapter mDetailAdapter;
-
-    private static final int INGREDIENT_LOADER_ID = 101;
-    private static final int STEP_LOADER_ID = 102;
+        LoaderManager.LoaderCallbacks<Cursor>,
+        DetailAdapter.OnItemClickListener {
 
     public static final String[] DETAIL_INGREDIENT_PROJECTION = {
             BakingContract.RecipeEntry.COLUMN_RECIPE_ID,
             BakingContract.RecipeEntry.COLUMN_NAME
     };
-
     public static final int INDEX_RECIPE_ID = 0;
     public static final int INDEX_RECIPE_NAME = 1;
-
     public static final String[] DETAIL_STEP_PROJECTION = {
             BakingContract.RecipeSteps.COLUMN_VIDEO,
             BakingContract.RecipeSteps.COLUMN_SHORT_DESCRIPTION,
             BakingContract.RecipeSteps.COLUMN_DESCRIPTION,
             BakingContract.RecipeSteps.COLUMN_NAME
     };
-
     public static final int INDEX_STEP_VIDEO = 0;
     public static final int INDEX_SHORT_DESCRIPTION = 1;
     public static final int INDEX_STEP_DESCRIPTION = 2;
     public static final int INDEX_STEP_NAME = 3;
-
+    private static final int INGREDIENT_LOADER_ID = 101;
+    private static final int STEP_LOADER_ID = 102;
+    @BindView(R.id.detail_recycler_view)
+    RecyclerView mRecyclerView;
+    private DetailAdapter mDetailAdapter;
     private Uri mRecipeUri;
 
     public DetailFragment() {
@@ -88,10 +86,12 @@ public class DetailFragment extends Fragment implements
         } else {
             throw new NullPointerException("URI and title cannot be null");
         }
+
+        //TODO TwoPane mode
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mDetailAdapter = new DetailAdapter(getContext());
+        mDetailAdapter = new DetailAdapter(getContext(), this);
         mRecyclerView.setAdapter(mDetailAdapter);
         getLoaderManager().initLoader(INGREDIENT_LOADER_ID, null, this);
         getLoaderManager().initLoader(STEP_LOADER_ID, null, this);
@@ -140,5 +140,23 @@ public class DetailFragment extends Fragment implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void onItemSelected(@Nullable Uri uri, @Nullable String video, @Nullable String description, @Nullable String title) {
+
+        if (uri != null) {
+            Intent intent = new Intent(getContext(), IngredientActivity.class);
+            intent.setData(uri);
+            startActivity(intent);
+        }
+
+        if (video != null && description != null && title != null) {
+            Intent intent = new Intent(getContext(), StepsActivity.class);
+            intent.putExtra("title", title);
+            intent.putExtra("description", description);
+            intent.putExtra("video", video);
+            startActivity(intent);
+        }
     }
 }

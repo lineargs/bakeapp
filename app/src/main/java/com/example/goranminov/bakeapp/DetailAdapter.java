@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,11 +48,22 @@ class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private Cursor ingredientCursor;
     private Cursor stepCursor;
 
+    OnItemClickListener mCallback;
+
+    interface OnItemClickListener {
+        void onItemSelected(@Nullable Uri uri,
+                            @Nullable String video,
+                            @Nullable String description,
+                            @Nullable String title);
+    }
+
     /**
      * Creates a MainAdapter.
      */
-    DetailAdapter(@NonNull Context context) {
+    DetailAdapter(@NonNull Context context,
+                  OnItemClickListener clickListener) {
         mContext = context;
+        mCallback = clickListener;
     }
 
     /**
@@ -94,33 +106,10 @@ class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             case VIEW_TYPE_INGREDIENT:
                 final IngredientViewHolder ingredientViewHolder = (IngredientViewHolder) holder;
                 ingredientViewHolder.bindViews(mContext);
-                ingredientViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ingredientCursor.moveToPosition(ingredientViewHolder.getAdapterPosition());
-                        Intent intent = new Intent(mContext, IngredientActivity.class);
-                        Uri uri = BakingContract.RecipeIngredients
-                                .buildIngredientUriWithId
-                                        (ingredientCursor.getLong(DetailFragment.INDEX_RECIPE_ID));
-                        intent.setData(uri);
-                        mContext.startActivity(intent);
-                    }
-                });
                 break;
             case VIEW_TYPE_STEP:
                 final StepViewHolder stepViewHolder = (StepViewHolder) holder;
                 stepViewHolder.bindViews(mContext, position - 1);
-                stepViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        stepCursor.moveToPosition(stepViewHolder.getAdapterPosition() - 1);
-                        Intent intent = new Intent(mContext, StepsActivity.class);
-                        intent.putExtra("title", stepCursor.getString(DetailFragment.INDEX_STEP_NAME));
-                        intent.putExtra("description", stepCursor.getString(DetailFragment.INDEX_STEP_DESCRIPTION));
-                        intent.putExtra("video", stepCursor.getString(DetailFragment.INDEX_STEP_VIDEO));
-                        mContext.startActivity(intent);
-                    }
-                });
         }
     }
 
@@ -136,35 +125,56 @@ class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     /*
          * Cache of the children views.
          */
-    class IngredientViewHolder extends RecyclerView.ViewHolder{
+    class IngredientViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.detail_ingredient_text_view)
                 TextView ingredientText;
 
         IngredientViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            view.setOnClickListener(this);
         }
         void bindViews (Context context) {
             ingredientCursor.moveToPosition(getAdapterPosition());
             ingredientText.setText(R.string.detail_ingredients);
+        }
+
+        @Override
+        public void onClick(View v) {
+            ingredientCursor.moveToPosition(getAdapterPosition());
+
+            Uri uri = BakingContract.RecipeIngredients
+                    .buildIngredientUriWithId
+                            (ingredientCursor.getLong(DetailFragment.INDEX_RECIPE_ID));
+            mCallback.onItemSelected(uri, null, null, null);
         }
     }
 
     /*
      * Cache of the children views.
      */
-    class StepViewHolder extends RecyclerView.ViewHolder{
+    class StepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         @BindView(R.id.detail_step_text_view)
                 TextView stepText;
 
         StepViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            view.setOnClickListener(this);
         }
 
         void bindViews(Context context, int position) {
             stepCursor.moveToPosition(position);
             stepText.setText(stepCursor.getString(DetailFragment.INDEX_SHORT_DESCRIPTION));
+        }
+
+        @Override
+        public void onClick(View v) {
+            stepCursor.moveToPosition(getAdapterPosition() - 1);
+            String title = stepCursor.getString(DetailFragment.INDEX_STEP_NAME);
+            String description = stepCursor.getString(DetailFragment.INDEX_STEP_DESCRIPTION);
+            String video = stepCursor.getString(DetailFragment.INDEX_STEP_VIDEO);
+            mCallback.onItemSelected(null, video, description, title);
         }
     }
 
