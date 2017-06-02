@@ -83,8 +83,11 @@ public class MainFragment extends Fragment implements
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int widthDivider = 600;
         int width = displayMetrics.widthPixels;
-
-        return width / widthDivider;
+        int nColumns = width / widthDivider;
+        if (nColumns == 2) {
+            return 1;
+        }
+        return nColumns;
     }
 
     @Override

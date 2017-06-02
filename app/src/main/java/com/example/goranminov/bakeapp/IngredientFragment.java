@@ -59,6 +59,10 @@ public class IngredientFragment extends Fragment implements
 
     private Uri mUri;
 
+    public void setmUri(Uri mUri) {
+        this.mUri = mUri;
+    }
+
     public IngredientFragment() {
     }
 
@@ -67,12 +71,6 @@ public class IngredientFragment extends Fragment implements
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_ingredients, container, false);
         ButterKnife.bind(this, rootView);
-
-        if (getActivity().getIntent().getData() != null) {
-            mUri = getActivity().getIntent().getData();
-        } else {
-            throw new NullPointerException("URI cannot be null");
-        }
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);

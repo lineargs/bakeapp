@@ -69,6 +69,7 @@ public class DetailFragment extends Fragment implements
     RecyclerView mRecyclerView;
     private DetailAdapter mDetailAdapter;
     private Uri mRecipeUri;
+    private boolean mDualPane;
 
     public DetailFragment() {
     }
@@ -79,6 +80,7 @@ public class DetailFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
 
+
         if (getActivity().getIntent().hasExtra("title") &&
                 getActivity().getIntent().getData() != null) {
             getActivity().setTitle(getActivity().getIntent().getStringExtra("title"));
@@ -86,6 +88,7 @@ public class DetailFragment extends Fragment implements
         } else {
             throw new NullPointerException("URI and title cannot be null");
         }
+
 
         //TODO TwoPane mode
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -96,6 +99,13 @@ public class DetailFragment extends Fragment implements
         getLoaderManager().initLoader(INGREDIENT_LOADER_ID, null, this);
         getLoaderManager().initLoader(STEP_LOADER_ID, null, this);
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        View detailsFrame = getActivity().findViewById(R.id.step_container);
+        mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
     }
 
     @Override
@@ -145,18 +155,41 @@ public class DetailFragment extends Fragment implements
     @Override
     public void onItemSelected(@Nullable Uri uri, @Nullable String video, @Nullable String description, @Nullable String title) {
 
-        if (uri != null) {
-            Intent intent = new Intent(getContext(), IngredientActivity.class);
-            intent.setData(uri);
-            startActivity(intent);
-        }
+        if (mDualPane) {
 
-        if (video != null && description != null && title != null) {
-            Intent intent = new Intent(getContext(), StepsActivity.class);
-            intent.putExtra("title", title);
-            intent.putExtra("description", description);
-            intent.putExtra("video", video);
-            startActivity(intent);
+            if (uri != null) {
+                IngredientFragment ingredientFragment = new IngredientFragment();
+                ingredientFragment.setmUri(uri);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.step_container, ingredientFragment)
+                        .commit();
+            }
+
+            if (video != null && description != null && title != null) {
+                StepsFragment stepsFragment = new StepsFragment();
+                stepsFragment.setDescription(description);
+                stepsFragment.setTitle(title);
+                stepsFragment.setVideo(video);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.step_container, stepsFragment)
+                        .commit();
+            }
+
+        } else {
+
+            if (uri != null) {
+                Intent intent = new Intent(getContext(), IngredientActivity.class);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+
+            if (video != null && description != null && title != null) {
+                Intent intent = new Intent(getContext(), StepsActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("description", description);
+                intent.putExtra("video", video);
+                startActivity(intent);
+            }
         }
     }
 }
