@@ -11,4 +11,6 @@
     <string name="pref_first_key" translatable="false">first</string>
     <string name="title_activity_steps">StepsActivity</string>
     <string name="exo_player_source_error">Can\'t connect to the source</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

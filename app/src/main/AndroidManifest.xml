@@ -65,14 +65,24 @@
         </activity>
         <activity
             android:name=".StepsActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_steps"
             android:parentActivityName=".DetailActivity"
-            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.goranminov.bakeapp.DetailActivity" />
         </activity>
+
+        <receiver android:name=".IngredientWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ingredient_widget_info" />
+        </receiver>
     </application>
 
 </manifest>
