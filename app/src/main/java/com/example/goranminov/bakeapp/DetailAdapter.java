@@ -29,7 +29,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.goranminov.bakeapp.data.BakingContract;
-import com.example.goranminov.bakeapp.viewpager.TabbedActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
