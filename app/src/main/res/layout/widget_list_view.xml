@@ -17,28 +17,43 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:padding="8dp"
+            android:text="Nutella Pie"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"/>
 
     <ListView
         android:id="@+id/widget_list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
         android:divider="@android:color/white"
-        android:dividerHeight="1px"/>
+        android:dividerHeight="1px"
+        android:gravity="center"/>
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/empty_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
         android:orientation="vertical">
         <TextView
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="No Ingredients"
             android:textAlignment="center"
-            android:text="No ingredients"
             android:textColor="#ffffff"
             android:textSize="20sp"
             android:textStyle="bold" />
