@@ -46,24 +46,6 @@
                 android:value="com.example.goranminov.bakeapp.DetailActivity" />
         </activity>
         <activity
-            android:name=".viewpager.TabbedActivity"
-            android:label="@string/title_activity_tabbed"
-            android:parentActivityName=".DetailActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.goranminov.bakeapp.DetailActivity" />
-        </activity>
-        <activity
-            android:name=".RecyclerViewSteps.StepActivity"
-            android:label="@string/title_activity_step"
-            android:parentActivityName=".DetailActivity"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.goranminov.bakeapp.DetailActivity" />
-        </activity>
-        <activity
             android:name=".StepsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_steps"
