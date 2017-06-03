@@ -58,6 +58,15 @@ public class DetailActionBarTest {
     private static final String KEY_TITLE = "title";
     private static final Uri uri = BakingContract.RecipeEntry.buildRecipeUriWithId(3);
 
+    /**
+     *
+     * This test demonstrates Espresso Intents using the IntentsTestRule, a class that extends
+     * ActivityTestRule. IntentsTestRule initializes Espresso-Intents before each test that is annotated
+     * with @Test and releases it once the test is complete. The designated Activity
+     * is also terminated after each test.
+     *
+     */
+
     @Rule
     public IntentsTestRule<MainActivity> detailActivityTestRule =
             new IntentsTestRule<MainActivity>(MainActivity.class);

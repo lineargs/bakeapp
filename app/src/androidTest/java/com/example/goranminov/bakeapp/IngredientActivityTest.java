@@ -53,11 +53,21 @@ public class IngredientActivityTest {
                     (2);
     private static final String INGREDIENT_TEXT = "5 units of large eggs";
 
+    /**
+     * The ActivityTestRule is a rule provided by Android used for functional testing of a single
+     * activity. The activity that will be tested, IngredientActivity in this case, will be launched
+     * before each test that's annotated with @Test and before methods annotated with @Before.
+     *
+     * The activity will be terminated after the test and methods annotated with @After are
+     * complete. This rule allows you to directly access the activity during the test.
+     */
     @Rule
     public ActivityTestRule<IngredientActivity> ingredientActivityTestRule =
             new ActivityTestRule<>(IngredientActivity.class, false, false);
 
-
+    /**
+     * Opens up the IngredientActivity, clicks on a RecyclerView item and checks it with the correct details.
+     */
     @Test
     public void ingredientTestRule() {
 

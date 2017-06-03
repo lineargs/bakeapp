@@ -43,7 +43,8 @@ import butterknife.ButterKnife;
 public class MainFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    @BindView(R.id.main_recycler_view) RecyclerView mRecyclerView;
+    @BindView(R.id.main_recycler_view)
+    RecyclerView mRecyclerView;
     private MainAdapter mMainAdapter;
     @BindView(R.id.loading_data_progress_bar)
     ProgressBar mLoadingData;
@@ -62,7 +63,8 @@ public class MainFragment extends Fragment implements
     public static final int INDEX_RECIPE_SERVINGS = 2;
     public static final int INDEX_RECIPE_IMAGE = 3;
 
-    public MainFragment() {}
+    public MainFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -108,17 +110,17 @@ public class MainFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            switch (loader.getId()) {
-                case RECIPE_LOADER_ID:
-                    mMainAdapter.swapCursor(data);
-                    if (data != null && data.getCount() != 0) {
-                        data.moveToFirst();
-                        showData();
-                    }
-                    break;
-                default:
-                    throw new RuntimeException("Loader not implemented: " + loader.getId());
-            }
+        switch (loader.getId()) {
+            case RECIPE_LOADER_ID:
+                mMainAdapter.swapCursor(data);
+                if (data != null && data.getCount() != 0) {
+                    data.moveToFirst();
+                    showData();
+                }
+                break;
+            default:
+                throw new RuntimeException("Loader not implemented: " + loader.getId());
+        }
     }
 
     @Override

@@ -42,7 +42,10 @@ public class MainActivityRecipe {
     @Rule
     public ActivityTestRule<MainActivity> mainActivityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
-
+    /**
+     * Opens up the MainActivity, checks if the RecyclerView
+     * has the child and clicks on it.
+     */
     @Test
     public void onClickRecyclerViewItem() {
 

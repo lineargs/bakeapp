@@ -41,7 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * A placeholder fragment containing a simple view.
+ * A placeholder fragment containing RecyclerView.
  */
 public class DetailFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,

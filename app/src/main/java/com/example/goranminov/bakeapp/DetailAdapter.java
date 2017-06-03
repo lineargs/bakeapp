@@ -17,7 +17,6 @@
 package com.example.goranminov.bakeapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -192,7 +191,7 @@ class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
      * This method is used to set the movie data on a MainAdapter if we've already
      * created one.
      *
-     * @param newCursor The new movie data to be displayed.
+     * @param newCursor The new data to be displayed.
      */
     public void swapIngredientCursor(Cursor newCursor) {
         ingredientCursor = newCursor;

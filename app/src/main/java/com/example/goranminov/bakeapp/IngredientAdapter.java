@@ -42,7 +42,7 @@ class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Ingredien
     private Cursor mCursor;
 
     /**
-     * Creates a MainAdapter.
+     * Creates an IngredientAdapter.
      */
     public IngredientAdapter(@NonNull Context context) {
         mContext = context;
@@ -75,6 +75,7 @@ class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Ingredien
     @Override
     public void onBindViewHolder(final IngredientViewHolder holder, int position) {
         mCursor.moveToPosition(position);
+
         holder.ingredientText.setText(BakingUtils.getIngredientString(mCursor.getString(IngredientFragment.INDEX_QUANTITY),
                 mCursor.getString(IngredientFragment.INDEX_MEASURE),
                         mCursor.getString(IngredientFragment.INDEX_INGREDIENT)));
@@ -107,10 +108,10 @@ class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Ingredien
     }
 
     /**
-     * This method is used to set the movie data on a MainAdapter if we've already
+     * This method is used to set the data on a IngredientAdapter if we've already
      * created one.
      *
-     * @param newCursor The new movie data to be displayed.
+     * @param newCursor The new data to be displayed.
      */
     void swapCursor(Cursor newCursor) {
         mCursor = newCursor;

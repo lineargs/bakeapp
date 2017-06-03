@@ -49,6 +49,9 @@ public class StepActivityTest {
     public IntentsTestRule<StepsActivity> stepsActivityIntentsTestRule =
             new IntentsTestRule<>(StepsActivity.class, false, false);
 
+    /**
+     * Opens up the StepActivity and checks if the Activity has the correct details.
+     */
     @Test
     public void checkDescriptionTextView() {
 

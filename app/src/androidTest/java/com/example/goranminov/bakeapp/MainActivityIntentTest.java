@@ -56,6 +56,14 @@ public class MainActivityIntentTest {
     private static final String RECIPE_NAME = "Cheesecake";
     private static final String KEY_TITLE = "title";
 
+    /**
+     *
+     * This test demonstrates Espresso Intents using the IntentsTestRule, a class that extends
+     * ActivityTestRule. IntentsTestRule initializes Espresso-Intents before each test that is annotated
+     * with @Test and releases it once the test is complete. The designated Activity
+     * is also terminated after each test.
+     *
+     */
     @Rule
     public IntentsTestRule<MainActivity> mainActivityActivityTestRule =
             new IntentsTestRule<>(MainActivity.class);
@@ -67,6 +75,9 @@ public class MainActivityIntentTest {
         intending(not(isInternal())).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, null));
     }
 
+    /**
+     * Clicks on a RecyclerView item and checks it opens up the DetailActivity with the correct details.
+     */
     @Test
     public void onClickCheesecakeInRecyclerView() {
 

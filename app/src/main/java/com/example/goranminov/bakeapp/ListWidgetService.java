@@ -19,8 +19,6 @@ package com.example.goranminov.bakeapp;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -53,7 +51,7 @@ public class ListWidgetService extends RemoteViewsService {
         final int INDEX_INGREDIENT = 1;
         final int INDEX_MEASURE = 2;
 
-        ListRemoteViewsFactory (Context context) {
+        ListRemoteViewsFactory(Context context) {
             mContext = context;
         }
 
@@ -62,6 +60,7 @@ public class ListWidgetService extends RemoteViewsService {
 
         }
 
+        //called on start
         @Override
         public void onDataSetChanged() {
 
@@ -86,6 +85,12 @@ public class ListWidgetService extends RemoteViewsService {
             return mCursor.getCount();
         }
 
+        /**
+         * This method acts like the onBindViewHolder method in an Adapter
+         *
+         * @param position The current position of the item in the ListView to be displayed
+         * @return The RemoteViews object to display for the provided postion
+         */
         @Override
         public RemoteViews getViewAt(int position) {
             if (mCursor == null || mCursor.getCount() == 0) return null;

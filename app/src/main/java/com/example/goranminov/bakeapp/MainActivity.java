@@ -17,27 +17,29 @@
 package com.example.goranminov.bakeapp;
 
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 
 import com.example.goranminov.bakeapp.idlingResource.SimpleIdlingResource;
 import com.example.goranminov.bakeapp.utils.RetrofitCall;
-
 
 
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
 
+    // The Idling Resource which will be null in production.
     @Nullable
     private SimpleIdlingResource mIdlingResource;
 
+    /**
+     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
+     */
     @VisibleForTesting
     @NonNull
     public IdlingResource getIdlingResource() {
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (sharedPreferences.getBoolean(getString(R.string.pref_first_key), true)) {
+            // Get the IdlingResource instance, only when the app is
+            // opened for first time
             getIdlingResource();
         }
     }

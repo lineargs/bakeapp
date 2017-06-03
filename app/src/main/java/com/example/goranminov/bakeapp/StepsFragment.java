@@ -17,17 +17,12 @@
 package com.example.goranminov.bakeapp;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
@@ -35,7 +30,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.goranminov.bakeapp.data.BakingContract;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -51,21 +45,16 @@ import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.source.dash.DashChunkSource;
-import com.google.android.exoplayer2.source.dash.DashMediaSource;
-import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoRendererEventListener;
 
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -140,13 +129,10 @@ public class StepsFragment extends Fragment {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
-        {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             hideSystemUi();
             stepDescription.setVisibility(View.GONE);
-        }
-        else
-        {
+        } else {
             showSystemUi();
             stepDescription.setVisibility(View.VISIBLE);
         }
@@ -267,28 +253,20 @@ public class StepsFragment extends Fragment {
 
         @Override
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-            String stateString;
+
             switch (playbackState) {
                 case ExoPlayer.STATE_IDLE:
-                    stateString = "ExoPlayer.STATE_IDLE    -";
                     break;
                 case ExoPlayer.STATE_BUFFERING:
-                    stateString = "ExoPlayer.STATE_BUFFERING -";
                     break;
                 case ExoPlayer.STATE_READY:
-                    stateString = "ExoPlayer.STATE_READY   -";
                     break;
                 case ExoPlayer.STATE_ENDED:
-                    stateString = "ExoPlayer.STATE_ENDED   -";
-                    player.setPlayWhenReady(false);
                     player.seekTo(0);
                     break;
                 default:
-                    stateString = "UNKNOWN STATE   -";
                     break;
             }
-            Log.d(TAG, "Changed state to " + stateString
-                    + " playWhenReady: " + playWhenReady);
         }
 
         @Override
