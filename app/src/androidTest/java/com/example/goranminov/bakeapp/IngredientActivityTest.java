@@ -21,7 +21,6 @@ import android.app.Instrumentation;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -35,14 +34,11 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intending;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasData;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.core.AllOf.allOf;
 import static org.hamcrest.core.IsNot.not;
 
 /**
@@ -50,32 +46,26 @@ import static org.hamcrest.core.IsNot.not;
  */
 
 @RunWith(AndroidJUnit4.class)
-public class MainActivityIntentTest {
+public class IngredientActivityTest {
 
-    private static final Uri uri = BakingContract.RecipeEntry.buildRecipeUriWithId(4);
-    private static final String RECIPE_NAME = "Cheesecake";
-    private static final String KEY_TITLE = "title";
+    private static final Uri uri = BakingContract.RecipeIngredients
+            .buildIngredientUriWithId
+                    (2);
+    private static final String INGREDIENT_TEXT = "5 units of large eggs";
 
     @Rule
-    public IntentsTestRule<MainActivity> mainActivityActivityTestRule =
-            new IntentsTestRule<>(MainActivity.class);
+    public ActivityTestRule<IngredientActivity> ingredientActivityTestRule =
+            new ActivityTestRule<>(IngredientActivity.class, false, false);
 
-    @Before
-    public void stubAllExternalIntents() {
-        // By default Espresso Intents does not stub any Intents. Stubbing needs to be setup before
-        // every test run. In this case all external Intents will be blocked.
-        intending(not(isInternal())).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, null));
-    }
 
     @Test
-    public void onClickCheesecakeInRecyclerView() {
+    public void ingredientTestRule() {
 
-        onView(ViewMatchers.withId(R.id.main_recycler_view))
-                .perform(RecyclerViewActions.actionOnItem
-                        (hasDescendant(withText(RECIPE_NAME)), click()));
+        Intent intent = new Intent();
+        intent.setData(uri);
+        ingredientActivityTestRule.launchActivity(intent);
 
-        intended(allOf
-                (hasExtra(KEY_TITLE, RECIPE_NAME),
-                hasData(uri)));
+        onView(ViewMatchers.withId(R.id.ingredient_recycler_view))
+                .check(matches(hasDescendant(withText(INGREDIENT_TEXT))));
     }
 }

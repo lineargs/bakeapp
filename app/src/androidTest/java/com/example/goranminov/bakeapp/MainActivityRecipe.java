@@ -40,7 +40,7 @@ public class MainActivityRecipe {
     public static final String RECIPE_NAME = "Nutella Pie";
 
     @Rule
-    public ActivityTestRule<MainActivity> mainActivityActivityTestRule = new ActivityTestRule<MainActivity>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mainActivityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
 
     @Test

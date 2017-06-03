@@ -89,8 +89,6 @@ public class DetailFragment extends Fragment implements
             throw new NullPointerException("URI and title cannot be null");
         }
 
-
-        //TODO TwoPane mode
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setHasFixedSize(true);
