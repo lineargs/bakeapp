@@ -62,6 +62,7 @@ import butterknife.ButterKnife;
 /**
  * A placeholder fragment containing a simple view.
  */
+//TODO Reformat Code
 public class StepsFragment extends Fragment {
     @BindView(R.id.step_player_view)
     SimpleExoPlayerView playerView;

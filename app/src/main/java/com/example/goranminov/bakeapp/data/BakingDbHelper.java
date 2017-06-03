@@ -142,9 +142,9 @@ public class BakingDbHelper extends SQLiteOpenHelper {
      * you want to update the schema without wiping data, commenting out the current body of this
      * method should be your top priority before modifying this method.
      *
-     * @param db Database that is being upgraded
-     * @param oldVersion     The old database version
-     * @param newVersion     The new database version
+     * @param db         Database that is being upgraded
+     * @param oldVersion The old database version
+     * @param newVersion The new database version
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

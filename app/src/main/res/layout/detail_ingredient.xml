@@ -18,16 +18,16 @@
     android:layout_height="wrap_content"
     android:background="@drawable/ingredient_selector"
     android:orientation="vertical"
-    android:paddingTop="24dp"
-    android:paddingBottom="24dp">
+    android:paddingTop="@dimen/padding_margin_24"
+    android:paddingBottom="@dimen/padding_margin_24">
 
     <TextView
         android:id="@+id/detail_ingredient_text_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:textSize="24sp"
-        android:layout_margin="8dp"
+        android:textSize="@dimen/detail_ingredient_text"
+        android:layout_margin="@dimen/padding_margin_8"
         android:textColor="@android:color/white" />
 
 </LinearLayout>

@@ -19,8 +19,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="4dp">
+    android:layout_margin="@dimen/padding_margin_8"
+    app:cardCornerRadius="@dimen/padding_margin_4">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +31,8 @@
         <ImageView
             android:id="@+id/recipe_image_card_view"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="@dimen/recipe_image_card_view"
+            android:contentDescription="@string/recipe_image"
             android:layout_gravity="center"
             android:background="@drawable/card_image_background"
             android:adjustViewBounds="true" />
@@ -46,9 +47,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="22sp"
+            android:textSize="@dimen/text_size_22"
             android:textColor="@android:color/black"
-            android:layout_margin="8dp"/>
+            android:layout_margin="@dimen/padding_margin_8"/>
 
             <TextView
                 android:id="@+id/recipe_servings_card_view"
@@ -56,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:layout_margin="8dp"/>
+                android:layout_margin="@dimen/padding_margin_8"/>
         </LinearLayout>
 
     </LinearLayout>

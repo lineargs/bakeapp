@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2017 The Android Open Source Project
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,23 +22,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:padding="8dp"
-            android:text="Nutella Pie"
+            android:padding="@dimen/padding_margin_8"
+            android:text="@string/widget_title"
             android:textColor="@color/colorPrimary"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
-    <ListView
-        android:id="@+id/widget_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:divider="@android:color/white"
-        android:dividerHeight="1px"
-        android:gravity="center"/>
+        <ListView
+            android:id="@+id/widget_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:divider="@android:color/white"
+            android:dividerHeight="@dimen/widget_divider"
+            android:gravity="center" />
     </LinearLayout>
 
     <RelativeLayout
@@ -48,14 +48,15 @@
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="No Ingredients"
+            android:text="@string/widget_empty_text"
             android:textAlignment="center"
             android:textColor="#ffffff"
-            android:textSize="20sp"
+            android:textSize="@dimen/detail_step_text"
             android:textStyle="bold" />
 
     </RelativeLayout>
