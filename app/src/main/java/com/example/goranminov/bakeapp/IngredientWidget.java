@@ -16,9 +16,13 @@
 
 package com.example.goranminov.bakeapp;
 
+import android.annotation.TargetApi;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.widget.RemoteViews;
 
 /**
@@ -29,13 +33,24 @@ public class IngredientWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredient_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
+        RemoteViews views = getListViewRemoteView(context);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    private static RemoteViews getListViewRemoteView(Context context) {
+        RemoteViews views = new RemoteViews(context.getPackageName(),
+                R.layout.widget_list_view);
+        Intent intent = new Intent(context, ListWidgetService.class);
+        views.setRemoteAdapter(R.id.widget_list_view, intent);
+        Intent appIntent = new Intent(context, IngredientActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+                appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setPendingIntentTemplate(R.id.widget_list_view, pendingIntent);
+        views.setEmptyView(R.id.widget_list_view, R.id.empty_view);
+        return views;
     }
 
     @Override

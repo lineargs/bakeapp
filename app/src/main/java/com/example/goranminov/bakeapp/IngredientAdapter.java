@@ -25,6 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.goranminov.bakeapp.utils.BakingUtils;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -73,12 +75,9 @@ class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Ingredien
     @Override
     public void onBindViewHolder(final IngredientViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        String ingredientString = mCursor.getString(IngredientFragment.INDEX_QUANTITY);
-        ingredientString = ingredientString + " " +
-                mCursor.getString(IngredientFragment.INDEX_MEASURE);
-        ingredientString = ingredientString + " of " +
-                mCursor.getString(IngredientFragment.INDEX_INGREDIENT);
-        holder.ingredientText.setText(ingredientString);
+        holder.ingredientText.setText(BakingUtils.getIngredientString(mCursor.getString(IngredientFragment.INDEX_QUANTITY),
+                mCursor.getString(IngredientFragment.INDEX_MEASURE),
+                        mCursor.getString(IngredientFragment.INDEX_INGREDIENT)));
     }
 
     /*

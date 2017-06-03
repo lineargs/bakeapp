@@ -20,9 +20,9 @@ package com.example.goranminov.bakeapp.utils;
  * Created by goranminov on 19/05/2017.
  */
 
-class BakingUtils {
+public class BakingUtils {
 
-    static String getMeasure(String measure, double quantity) {
+    public static String getMeasure(String measure, double quantity) {
 
         if (measure.equals("CUP")) {
 
@@ -47,5 +47,9 @@ class BakingUtils {
             if (quantity != 1) return "units";
             else return "unit";
         }
+    }
+
+    public static String getIngredientString(String quantity, String measure, String ingredient) {
+        return quantity + " " + measure + " of " + ingredient;
     }
 }
