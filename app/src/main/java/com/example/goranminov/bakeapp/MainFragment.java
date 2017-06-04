@@ -23,7 +23,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -83,13 +82,9 @@ public class MainFragment extends Fragment implements
     private int numberOfColumns() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int widthDivider = 600;
+        int widthDivider = 800;
         int width = displayMetrics.widthPixels;
-        int nColumns = width / widthDivider;
-        if (nColumns == 2) {
-            return 1;
-        }
-        return nColumns;
+        return width / widthDivider;
     }
 
     @Override

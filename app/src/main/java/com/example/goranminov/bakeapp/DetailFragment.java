@@ -16,7 +16,6 @@
 
 package com.example.goranminov.bakeapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -27,15 +26,13 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.goranminov.bakeapp.data.BakingContract;
+import com.example.goranminov.bakeapp.utils.BakingUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,28 +45,35 @@ public class DetailFragment extends Fragment implements
         DetailAdapter.OnItemClickListener {
 
     public static final String[] DETAIL_INGREDIENT_PROJECTION = {
-            BakingContract.RecipeEntry.COLUMN_RECIPE_ID,
-            BakingContract.RecipeEntry.COLUMN_NAME
+            BakingContract.RecipeEntry.COLUMN_RECIPE_ID
     };
     public static final int INDEX_RECIPE_ID = 0;
-    public static final int INDEX_RECIPE_NAME = 1;
+
     public static final String[] DETAIL_STEP_PROJECTION = {
-            BakingContract.RecipeSteps.COLUMN_VIDEO,
             BakingContract.RecipeSteps.COLUMN_SHORT_DESCRIPTION,
-            BakingContract.RecipeSteps.COLUMN_DESCRIPTION,
-            BakingContract.RecipeSteps.COLUMN_NAME
+            BakingContract.RecipeSteps.COLUMN_NAME,
+            BakingContract.RecipeSteps.COLUMN_RECIPE_ID,
+            BakingContract.RecipeSteps.COLUMN_STEP_ID
     };
-    public static final int INDEX_STEP_VIDEO = 0;
-    public static final int INDEX_SHORT_DESCRIPTION = 1;
-    public static final int INDEX_STEP_DESCRIPTION = 2;
-    public static final int INDEX_STEP_NAME = 3;
+
+    public static final int INDEX_SHORT_DESCRIPTION = 0;
+    public static final int INDEX_STEP_NAME = 1;
+    public static final int INDEX_STEP_RECIPE_ID = 2;
+    public static final int INDEX_STEP_ID = 3;
+
     private static final int INGREDIENT_LOADER_ID = 101;
     private static final int STEP_LOADER_ID = 102;
+
     @BindView(R.id.detail_recycler_view)
     RecyclerView mRecyclerView;
     private DetailAdapter mDetailAdapter;
     private Uri mRecipeUri;
     private boolean mDualPane;
+
+    private static final String RECIPE_ID = "recipeId";
+    private static final String STEP_ID = "stepId";
+    private static final String TITLE = "title";
+    private static final String TOTAL_STEPS = "total";
 
     public DetailFragment() {
     }
@@ -81,9 +85,9 @@ public class DetailFragment extends Fragment implements
         ButterKnife.bind(this, rootView);
 
 
-        if (getActivity().getIntent().hasExtra("title") &&
+        if (getActivity().getIntent().hasExtra(TITLE) &&
                 getActivity().getIntent().getData() != null) {
-            getActivity().setTitle(getActivity().getIntent().getStringExtra("title"));
+            getActivity().setTitle(getActivity().getIntent().getStringExtra(TITLE));
             mRecipeUri = getActivity().getIntent().getData();
         } else {
             throw new NullPointerException("URI and title cannot be null");
@@ -151,7 +155,9 @@ public class DetailFragment extends Fragment implements
     }
 
     @Override
-    public void onItemSelected(@Nullable Uri uri, @Nullable String video, @Nullable String description, @Nullable String title) {
+    public void onItemSelected(@Nullable Uri uri, @Nullable Integer recipeId,
+                               @Nullable Integer stepId, @Nullable String title,
+                               @Nullable Integer totalSteps) {
 
         if (mDualPane) {
 
@@ -163,11 +169,16 @@ public class DetailFragment extends Fragment implements
                         .commit();
             }
 
-            if (video != null && description != null && title != null) {
+            if (recipeId != null && stepId != null
+                    && title != null && totalSteps != null) {
                 StepsFragment stepsFragment = new StepsFragment();
-                stepsFragment.setDescription(description);
+                stepsFragment.setStepId(stepId);
                 stepsFragment.setTitle(title);
-                stepsFragment.setVideo(video);
+                stepsFragment.setTotalSteps(totalSteps);
+                stepsFragment.setRecipeId(recipeId);
+                stepsFragment.setVideoIds(BakingUtils.getStepsVideo(getContext(), recipeId));
+                stepsFragment.setDescriptionIds(BakingUtils.getStepsDescription(getContext(),
+                        recipeId));
                 getFragmentManager().beginTransaction()
                         .replace(R.id.step_container, stepsFragment)
                         .commit();
@@ -181,11 +192,12 @@ public class DetailFragment extends Fragment implements
                 startActivity(intent);
             }
 
-            if (video != null && description != null && title != null) {
+            if (recipeId != null && stepId != null && title != null) {
                 Intent intent = new Intent(getContext(), StepsActivity.class);
-                intent.putExtra("title", title);
-                intent.putExtra("description", description);
-                intent.putExtra("video", video);
+                intent.putExtra(TITLE, title);
+                intent.putExtra(RECIPE_ID, recipeId);
+                intent.putExtra(STEP_ID, stepId);
+                intent.putExtra(TOTAL_STEPS, totalSteps);
                 startActivity(intent);
             }
         }

@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
  * Created by goranminov on 14/05/2017.
  */
 
-class MainAdapter extends RecyclerView.Adapter<MainAdapter.RecipeViewHolder>{
+class MainAdapter extends RecyclerView.Adapter<MainAdapter.RecipeViewHolder> {
 
 
     private final Context mContext;
@@ -58,8 +58,8 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.RecipeViewHolder>{
      * This gets called when each new ViewHolder is created. This happens when the RecyclerView
      * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
      *
-     * @param parent The ViewGroup that these ViewHolders are contained within.
-     * @param viewType  If the RecyclerView has more than one type of item.
+     * @param parent   The ViewGroup that these ViewHolders are contained within.
+     * @param viewType If the RecyclerView has more than one type of item.
      * @return A new MovieOverviewViewHolder that holds the View for each grid item
      */
     @Override
@@ -74,8 +74,8 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.RecipeViewHolder>{
      * OnBindViewHolder is called by the RecyclerView to display the data at the specified
      * position.
      *
-     * @param holder The ViewHolder which should be updated to represent the
-     * contents of the item at the given position in the data set.
+     * @param holder   The ViewHolder which should be updated to represent the
+     *                 contents of the item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
      */
     @Override
@@ -109,7 +109,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.RecipeViewHolder>{
     /*
      * Cache of the children views.
      */
-    class RecipeViewHolder extends RecyclerView.ViewHolder{
+    class RecipeViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.recipe_name_card_view)
         TextView recipeName;
         @BindView(R.id.recipe_image_card_view)

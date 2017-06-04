@@ -29,7 +29,7 @@ import com.example.goranminov.bakeapp.utils.retrofit.Step;
 
 class DatabaseUtils {
 
-    static ContentValues[] getRecipesContentValues (BakingRecipes bakingRecipes) {
+    static ContentValues[] getRecipesContentValues(BakingRecipes bakingRecipes) {
         ContentValues[] recipeContentValues = new ContentValues[1];
         ContentValues recipeValues = new ContentValues();
         recipeValues.put(BakingContract.RecipeEntry.COLUMN_RECIPE_ID, bakingRecipes.getId());
@@ -42,19 +42,19 @@ class DatabaseUtils {
         return recipeContentValues;
     }
 
-    static ContentValues[] getIngredientsValues (BakingRecipes bakingRecipes, Ingredient ingredient) {
+    static ContentValues[] getIngredientsValues(BakingRecipes bakingRecipes, Ingredient ingredient) {
         ContentValues[] ingredientsContentValues = new ContentValues[1];
         ContentValues ingredientsValues = new ContentValues();
         ingredientsValues.put(BakingContract.RecipeIngredients.COLUMN_RECIPE_ID, bakingRecipes.getId());
         ingredientsValues.put(BakingContract.RecipeIngredients.COLUMN_QUANTITY, ingredient.getQuantity());
         ingredientsValues.put(BakingContract.RecipeIngredients.COLUMN_MEASURE,
-                BakingUtils.getMeasure(ingredient.getMeasure(), ingredient.getQuantity()));
+                BakingUtils.getMeasure(ingredient.getMeasure()));
         ingredientsValues.put(BakingContract.RecipeIngredients.COLUMN_INGREDIENT, ingredient.getIngredient());
         ingredientsContentValues[0] = ingredientsValues;
         return ingredientsContentValues;
     }
 
-    static ContentValues[] getStepsValues (BakingRecipes bakingRecipes, Step step) {
+    static ContentValues[] getStepsValues(BakingRecipes bakingRecipes, Step step) {
         ContentValues[] stepsContentValues = new ContentValues[1];
         ContentValues stepsValues = new ContentValues();
         stepsValues.put(BakingContract.RecipeSteps.COLUMN_RECIPE_ID, bakingRecipes.getId());

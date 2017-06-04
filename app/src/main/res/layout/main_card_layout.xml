@@ -56,6 +56,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="@dimen/ingredient_text_view"
                 android:gravity="end"
                 android:layout_margin="@dimen/padding_margin_8"/>
         </LinearLayout>

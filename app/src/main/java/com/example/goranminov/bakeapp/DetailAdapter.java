@@ -50,9 +50,10 @@ class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     interface OnItemClickListener {
         void onItemSelected(@Nullable Uri uri,
-                            @Nullable String video,
-                            @Nullable String description,
-                            @Nullable String title);
+                            @Nullable Integer recipeId,
+                            @Nullable Integer stepId,
+                            @Nullable String title,
+                            @Nullable Integer totalSteps);
     }
 
     /**
@@ -144,7 +145,7 @@ class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             Uri uri = BakingContract.RecipeIngredients
                     .buildIngredientUriWithId
                             (ingredientCursor.getLong(DetailFragment.INDEX_RECIPE_ID));
-            mCallback.onItemSelected(uri, null, null, null);
+            mCallback.onItemSelected(uri, null, null, null, null);
         }
     }
 
@@ -169,10 +170,11 @@ class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         @Override
         public void onClick(View v) {
             stepCursor.moveToPosition(getAdapterPosition() - 1);
+            Integer recipeId = stepCursor.getInt(DetailFragment.INDEX_STEP_RECIPE_ID);
+            Integer stepId = stepCursor.getInt(DetailFragment.INDEX_STEP_ID);
             String title = stepCursor.getString(DetailFragment.INDEX_STEP_NAME);
-            String description = stepCursor.getString(DetailFragment.INDEX_STEP_DESCRIPTION);
-            String video = stepCursor.getString(DetailFragment.INDEX_STEP_VIDEO);
-            mCallback.onItemSelected(null, video, description, title);
+            Integer totalSteps = stepCursor.getCount() - 1;
+            mCallback.onItemSelected(null, recipeId, stepId, title, totalSteps);
         }
     }
 

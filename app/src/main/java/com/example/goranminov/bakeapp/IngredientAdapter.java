@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
  * Created by goranminov on 14/05/2017.
  */
 
-class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder>{
+class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder> {
 
 
     private final Context mContext;
@@ -52,8 +52,8 @@ class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Ingredien
      * This gets called when each new ViewHolder is created. This happens when the RecyclerView
      * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
      *
-     * @param parent The ViewGroup that these ViewHolders are contained within.
-     * @param viewType  If the RecyclerView has more than one type of item.
+     * @param parent   The ViewGroup that these ViewHolders are contained within.
+     * @param viewType If the RecyclerView has more than one type of item.
      * @return A new MovieOverviewViewHolder that holds the View for each grid item
      */
     @Override
@@ -68,8 +68,8 @@ class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Ingredien
      * OnBindViewHolder is called by the RecyclerView to display the data at the specified
      * position.
      *
-     * @param holder The ViewHolder which should be updated to represent the
-     * contents of the item at the given position in the data set.
+     * @param holder   The ViewHolder which should be updated to represent the
+     *                 contents of the item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
      */
     @Override
@@ -78,13 +78,13 @@ class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Ingredien
 
         holder.ingredientText.setText(BakingUtils.getIngredientString(mCursor.getString(IngredientFragment.INDEX_QUANTITY),
                 mCursor.getString(IngredientFragment.INDEX_MEASURE),
-                        mCursor.getString(IngredientFragment.INDEX_INGREDIENT)));
+                mCursor.getString(IngredientFragment.INDEX_INGREDIENT)));
     }
 
     /*
      * Cache of the children views.
      */
-    class IngredientViewHolder extends RecyclerView.ViewHolder{
+    class IngredientViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ingredient_text_view)
         TextView ingredientText;
 

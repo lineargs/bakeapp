@@ -17,17 +17,20 @@
 package com.example.goranminov.bakeapp;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -55,24 +58,59 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoRendererEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Optional;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-//TODO Reformat Code
+
 public class StepsFragment extends Fragment {
+
     @BindView(R.id.step_player_view)
     SimpleExoPlayerView playerView;
     private SimpleExoPlayer player;
     @BindView(R.id.step_section_label)
     TextView stepDescription;
+    @Nullable
+    @BindView(R.id.steps_navigation_layout)
+    RelativeLayout stepNavigation;
+    @Nullable
+    @BindView(R.id.fab_previous)
+    FloatingActionButton fabPrevious;
+    @Nullable
+    @BindView(R.id.fab_next)
+    FloatingActionButton fabNext;
+
+    @Optional
+    @OnClick(R.id.fab_next)
+    void nextStep() {
+        Intent intent = new Intent(getContext(), StepsActivity.class);
+        intent.putExtra(TITLE, title);
+        intent.putExtra(RECIPE_ID, recipeId);
+        intent.putExtra(STEP_ID, ++stepId);
+        intent.putExtra(TOTAL_STEPS, totalSteps);
+        startActivity(intent);
+    }
+
+    @Optional
+    @OnClick(R.id.fab_previous)
+    void previousStep() {
+        Intent intent = new Intent(getContext(), StepsActivity.class);
+        intent.putExtra(TITLE, title);
+        intent.putExtra(RECIPE_ID, recipeId);
+        intent.putExtra(STEP_ID, --stepId);
+        intent.putExtra(TOTAL_STEPS, totalSteps);
+        startActivity(intent);
+    }
 
     private long playbackPosition;
     private int currentWindow;
-    private int oldOptions;
 
     private ComponentListener componentListener;
 
@@ -81,24 +119,16 @@ public class StepsFragment extends Fragment {
     private static final DefaultBandwidthMeter BANDWIDTH_METER =
             new DefaultBandwidthMeter();
 
-    private static final String VIDEO = "video";
-    private static final String DESCRIPTION = "description";
+    private static final String RECIPE_ID = "recipeId";
+    private static final String STEP_ID = "stepId";
+    private static final String TITLE = "title";
+    private static final String TOTAL_STEPS = "total";
+    private static final String VIDEO_LIST = "video_list";
+    private static final String DESCRIPTION_LIST = "description_list";
 
-    private String video;
-    private String description;
+    private List<String> videoIds, descriptionIds;
     private String title;
-
-    public void setVideo(String video) {
-        this.video = video;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    private Integer stepId, totalSteps, recipeId;
 
 
     public StepsFragment() {
@@ -108,22 +138,43 @@ public class StepsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            video = savedInstanceState.getString(VIDEO);
-            description = savedInstanceState.getString(DESCRIPTION);
+            recipeId = savedInstanceState.getInt(RECIPE_ID);
+            stepId = savedInstanceState.getInt(STEP_ID);
+            videoIds = savedInstanceState.getStringArrayList(VIDEO_LIST);
+            descriptionIds = savedInstanceState.getStringArrayList(DESCRIPTION_LIST);
+            title = savedInstanceState.getString(TITLE);
         }
+
         View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
         ButterKnife.bind(this, rootView);
         getActivity().setTitle(title);
         componentListener = new ComponentListener();
-        stepDescription.setText(description);
+        if (descriptionIds != null) {
+            stepDescription.setText(descriptionIds.get(stepId));
+        }
+
+        if (stepId.equals(0)) {
+            if (fabPrevious != null) {
+                fabPrevious.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        if (stepId.equals(totalSteps)) {
+            if (fabNext != null) {
+                fabNext.setVisibility(View.INVISIBLE);
+            }
+        }
 
         return rootView;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putString(VIDEO, video);
-        outState.putString(DESCRIPTION, description);
+        outState.putInt(RECIPE_ID, recipeId);
+        outState.putInt(STEP_ID, stepId);
+        outState.putStringArrayList(VIDEO_LIST, (ArrayList<String>) videoIds);
+        outState.putStringArrayList(DESCRIPTION_LIST, (ArrayList<String>) descriptionIds);
+        outState.putString(TITLE, title);
     }
 
     @Override
@@ -133,9 +184,15 @@ public class StepsFragment extends Fragment {
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             hideSystemUi();
             stepDescription.setVisibility(View.GONE);
+            if (stepNavigation != null) {
+                stepNavigation.setVisibility(View.GONE);
+            }
         } else {
             showSystemUi();
             stepDescription.setVisibility(View.VISIBLE);
+            if (stepNavigation != null) {
+                stepNavigation.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -188,8 +245,10 @@ public class StepsFragment extends Fragment {
             player.setPlayWhenReady(playWhenReady);
             player.seekTo(currentWindow, playbackPosition);
         }
-        MediaSource mediaSource = buildMediaSource(Uri.parse(video));
-        player.prepare(mediaSource, true, false);
+        if (videoIds != null) {
+            MediaSource mediaSource = buildMediaSource(Uri.parse(videoIds.get(stepId)));
+            player.prepare(mediaSource, true, false);
+        }
     }
 
     private void releasePlayer() {
@@ -230,12 +289,36 @@ public class StepsFragment extends Fragment {
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
     }
 
+    public void setTotalSteps(Integer totalSteps) {
+        this.totalSteps = totalSteps;
+    }
+
+    public void setRecipeId(Integer recipeId) {
+        this.recipeId = recipeId;
+    }
+
+    public void setDescriptionIds(List<String> descriptionIds) {
+        this.descriptionIds = descriptionIds;
+    }
+
+
+    public void setVideoIds(List<String> videoIds) {
+        this.videoIds = videoIds;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setStepId(Integer stepId) {
+        this.stepId = stepId;
+    }
+
     private class ComponentListener implements ExoPlayer.EventListener,
             VideoRendererEventListener,
             AudioRendererEventListener,
             SimpleExoPlayer.VideoListener {
 
-        private final String TAG = ComponentListener.class.getSimpleName();
 
         @Override
         public void onTimelineChanged(Timeline timeline, Object manifest) {
@@ -380,8 +463,5 @@ public class StepsFragment extends Fragment {
         public void onAudioDisabled(DecoderCounters counters) {
 
         }
-
-
     }
-
 }

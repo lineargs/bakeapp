@@ -20,7 +20,16 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.goranminov.bakeapp.utils.BakingUtils;
+
+import java.util.List;
+
 public class StepsActivity extends AppCompatActivity {
+
+    private static final String RECIPE_ID = "recipeId";
+    private static final String STEP_ID = "stepId";
+    private static final String TITLE = "title";
+    private static final String TOTAL_STEPS = "total";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +42,20 @@ public class StepsActivity extends AppCompatActivity {
 
             FragmentManager fragmentManager = getSupportFragmentManager();
 
-            String description = getIntent().getStringExtra("description");
-            stepsFragment.setDescription(description);
-            String video = getIntent().getStringExtra("video");
-            stepsFragment.setVideo(video);
-            String title = getIntent().getStringExtra("title");
+            Integer stepId = getIntent().getIntExtra(STEP_ID, 0);
+            stepsFragment.setStepId(stepId);
+
+            Integer recipeId = getIntent().getIntExtra(RECIPE_ID, 0);
+            stepsFragment.setRecipeId(recipeId);
+            stepsFragment.setVideoIds(BakingUtils.getStepsVideo
+                    (this, recipeId));
+            stepsFragment.setDescriptionIds(BakingUtils.getStepsDescription
+                    (this, recipeId));
+            String title = getIntent().getStringExtra(TITLE);
             stepsFragment.setTitle(title);
+
+            Integer totalSteps = getIntent().getIntExtra(TOTAL_STEPS, 0);
+            stepsFragment.setTotalSteps(totalSteps);
 
             fragmentManager.beginTransaction()
                     .add(R.id.steps_container, stepsFragment)

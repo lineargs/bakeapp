@@ -43,6 +43,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitCall {
 
     private static final String BASE_URL = "https://d17h27t6h515a5.cloudfront.net/";
+    private static final String JSON_FILE = "baking.json";
 
     public static void getRecipes(final Context context) {
 
@@ -53,7 +54,7 @@ public class RetrofitCall {
 
         RecipesAPI recipesAPI = retrofit.create(RecipesAPI.class);
 
-        Call<List<BakingRecipes>> call = recipesAPI.bakingRecipes("baking.json");
+        Call<List<BakingRecipes>> call = recipesAPI.bakingRecipes(JSON_FILE);
 
         call.enqueue(new Callback<List<BakingRecipes>>() {
             @Override
