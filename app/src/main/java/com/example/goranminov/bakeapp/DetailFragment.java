@@ -179,6 +179,8 @@ public class DetailFragment extends Fragment implements
                 stepsFragment.setVideoIds(BakingUtils.getStepsVideo(getContext(), recipeId));
                 stepsFragment.setDescriptionIds(BakingUtils.getStepsDescription(getContext(),
                         recipeId));
+                stepsFragment.setThumbnailIds(BakingUtils.getStepsThumbnail(getContext(),
+                        recipeId));
                 getFragmentManager().beginTransaction()
                         .replace(R.id.step_container, stepsFragment)
                         .commit();

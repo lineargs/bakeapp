@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -57,6 +58,7 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoRendererEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,11 +74,21 @@ import butterknife.Optional;
 
 public class StepsFragment extends Fragment {
 
+    private static final DefaultBandwidthMeter BANDWIDTH_METER =
+            new DefaultBandwidthMeter();
+    private static final String RECIPE_ID = "recipeId";
+    private static final String STEP_ID = "stepId";
+    private static final String TITLE = "title";
+    private static final String TOTAL_STEPS = "total";
+    private static final String VIDEO_LIST = "video_list";
+    private static final String DESCRIPTION_LIST = "description_list";
+    private static final String THUMBNAIL_LIST = "thumbnail_list";
     @BindView(R.id.step_player_view)
     SimpleExoPlayerView playerView;
-    private SimpleExoPlayer player;
     @BindView(R.id.step_section_label)
     TextView stepDescription;
+    @BindView(R.id.step_image)
+    ImageView stepImage;
     @Nullable
     @BindView(R.id.steps_navigation_layout)
     RelativeLayout stepNavigation;
@@ -86,6 +98,16 @@ public class StepsFragment extends Fragment {
     @Nullable
     @BindView(R.id.fab_next)
     FloatingActionButton fabNext;
+    private SimpleExoPlayer player;
+    private long playbackPosition;
+    private int currentWindow;
+    private ComponentListener componentListener;
+    private boolean playWhenReady = true;
+    private List<String> videoIds, descriptionIds, thumbnailIds;
+    private String title;
+    private Integer stepId, totalSteps, recipeId;
+    public StepsFragment() {
+    }
 
     @Optional
     @OnClick(R.id.fab_next)
@@ -109,31 +131,6 @@ public class StepsFragment extends Fragment {
         startActivity(intent);
     }
 
-    private long playbackPosition;
-    private int currentWindow;
-
-    private ComponentListener componentListener;
-
-    private boolean playWhenReady = true;
-
-    private static final DefaultBandwidthMeter BANDWIDTH_METER =
-            new DefaultBandwidthMeter();
-
-    private static final String RECIPE_ID = "recipeId";
-    private static final String STEP_ID = "stepId";
-    private static final String TITLE = "title";
-    private static final String TOTAL_STEPS = "total";
-    private static final String VIDEO_LIST = "video_list";
-    private static final String DESCRIPTION_LIST = "description_list";
-
-    private List<String> videoIds, descriptionIds;
-    private String title;
-    private Integer stepId, totalSteps, recipeId;
-
-
-    public StepsFragment() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -143,14 +140,26 @@ public class StepsFragment extends Fragment {
             videoIds = savedInstanceState.getStringArrayList(VIDEO_LIST);
             descriptionIds = savedInstanceState.getStringArrayList(DESCRIPTION_LIST);
             title = savedInstanceState.getString(TITLE);
+            thumbnailIds = savedInstanceState.getStringArrayList(THUMBNAIL_LIST);
         }
 
         View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
         ButterKnife.bind(this, rootView);
         getActivity().setTitle(title);
         componentListener = new ComponentListener();
+
         if (descriptionIds != null) {
             stepDescription.setText(descriptionIds.get(stepId));
+        }
+
+        if (thumbnailIds.get(stepId).contains("")) {
+            stepImage.setImageResource(R.drawable.ic_broken_image_accent);
+        } else {
+            Picasso.with(stepImage.getContext())
+                    .load(thumbnailIds.get(stepId))
+                    .centerInside()
+                    .fit()
+                    .into(stepImage);
         }
 
         if (stepId.equals(0)) {
@@ -175,6 +184,7 @@ public class StepsFragment extends Fragment {
         outState.putStringArrayList(VIDEO_LIST, (ArrayList<String>) videoIds);
         outState.putStringArrayList(DESCRIPTION_LIST, (ArrayList<String>) descriptionIds);
         outState.putString(TITLE, title);
+        outState.putStringArrayList(THUMBNAIL_LIST, (ArrayList<String>) thumbnailIds);
     }
 
     @Override
@@ -184,12 +194,14 @@ public class StepsFragment extends Fragment {
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             hideSystemUi();
             stepDescription.setVisibility(View.GONE);
+            stepImage.setVisibility(View.GONE);
             if (stepNavigation != null) {
                 stepNavigation.setVisibility(View.GONE);
             }
         } else {
             showSystemUi();
             stepDescription.setVisibility(View.VISIBLE);
+            stepImage.setVisibility(View.VISIBLE);
             if (stepNavigation != null) {
                 stepNavigation.setVisibility(View.VISIBLE);
             }
@@ -304,6 +316,10 @@ public class StepsFragment extends Fragment {
 
     public void setVideoIds(List<String> videoIds) {
         this.videoIds = videoIds;
+    }
+
+    public void setThumbnailIds(List<String> thumbnailIds) {
+        this.thumbnailIds = thumbnailIds;
     }
 
     public void setTitle(String title) {

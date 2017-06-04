@@ -12,6 +12,7 @@
 
     <string name="recipe_image">Recipe Image</string>
     <string name="pref_first_key" translatable="false">first</string>
+    <string name="step_image">Recipe Thumbnail</string>
 
     <string name="add_widget">Add widget</string>
     <string name="widget_title">Nutella Pie</string>

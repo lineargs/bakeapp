@@ -110,4 +110,32 @@ public class BakingUtils {
         }
         return description;
     }
+
+    public static List<String> getStepsThumbnail (Context context, long recipeId) {
+        List<String> thumbnail = new ArrayList<String>();
+        final String[] PROJECTION = {
+                BakingContract.RecipeSteps.COLUMN_THUMBNAIL
+        };
+
+        final int INDEX_THUMBNAIL = 0;
+
+        Cursor cursor = context.getContentResolver().query
+                (BakingContract.RecipeSteps.buildStepUriWithId(recipeId),
+                        PROJECTION,
+                        null,
+                        null,
+                        null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                thumbnail.add(cursor.getString(INDEX_THUMBNAIL));
+                cursor.moveToNext();
+            }
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return thumbnail;
+    }
 }

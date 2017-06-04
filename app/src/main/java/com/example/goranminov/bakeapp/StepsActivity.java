@@ -49,6 +49,8 @@ public class StepsActivity extends AppCompatActivity {
             stepsFragment.setRecipeId(recipeId);
             stepsFragment.setVideoIds(BakingUtils.getStepsVideo
                     (this, recipeId));
+            stepsFragment.setThumbnailIds(BakingUtils.getStepsThumbnail
+                    (this, recipeId));
             stepsFragment.setDescriptionIds(BakingUtils.getStepsDescription
                     (this, recipeId));
             String title = getIntent().getStringExtra(TITLE);
