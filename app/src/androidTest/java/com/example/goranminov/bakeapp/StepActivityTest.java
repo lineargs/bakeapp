@@ -37,12 +37,12 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 public class StepActivityTest {
 
     private static final String TITLE = "Yellow Cake";
-    private static final String DESCRIPTION = "3. Lightly beat together the egg yolks, 1 tablespoon of vanilla, and 80 grams (1/3 cup) of the milk in a small bowl.";
-    private static final String VIDEO = "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffde36_2-mix-all-wet-ingredients-yellow-cake/2-mix-all-wet-ingredients-yellow-cake.mp4";
+    private static final String DESCRIPTION = "5. Beat the cream cheese, remaining 200 grams (1 cup) of sugar, and remaining 1/2 teaspoon salt on medium speed in a stand mixer with the paddle attachment for 3 minutes (or high speed if using a hand mixer). ";
 
+    private static final String RECIPE_ID = "recipeId";
+    private static final String STEP_ID = "stepId";
     private static final String KEY_TITLE = "title";
-    private static final String KEY_DESCRIPTION = "description";
-    private static final String KEY_VIDEO = "video";
+    private static final String TOTAL_STEPS = "total";
 
 
     @Rule
@@ -57,8 +57,9 @@ public class StepActivityTest {
 
         Intent intent = new Intent();
         intent.putExtra(KEY_TITLE, TITLE);
-        intent.putExtra(KEY_DESCRIPTION, DESCRIPTION);
-        intent.putExtra(KEY_VIDEO, VIDEO);
+        intent.putExtra(RECIPE_ID, 4);
+        intent.putExtra(STEP_ID, 5);
+        intent.putExtra(TOTAL_STEPS, 12);
         stepsActivityIntentsTestRule.launchActivity(intent);
 
         onView(withId(R.id.step_section_label)).check(matches(withText(DESCRIPTION)));
