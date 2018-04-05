@@ -1,47 +1,51 @@
-# Make A Baking App
+# Bake App
 
-MEETS SPECIFICATIONS
+## Project Overview
+This project is part of the Android Developer Nanodegree on **Udacity**.
 
-Display recipes - App displays recipes from provided network resource.
+## Criteria met:
 
-App Navigation - App allows navigation between individual recipes and recipe steps.
+- Application displays recipes from provided network resource.
+- Application allows navigation between individual recipes and recipe steps.
+- Application uses RecyclerView and can handle recipe steps that include videos or images.
+- Application uses Master Detail Flow to display recipe steps and navigation between them.
+- Application uses Exoplayer to display videos.
+- Application properly initializes and releases video assets when appropriate.
+- Application properly retrieves media assets from the provided network links. It properly handles network requests.
+- Application makes use of Espresso to test aspects of the UI.
+- Application sensibly utilizes a third-party library to enhance the app's features.
+- Third-party libraries utilized: Retrofit(Annotations for interface methods to control the HTTP request behavior),
+Butter Knife(Field and method binding for Android views), Picasso(A powerful image downloading and caching library for Android), Android Debug Database(Used only in debugCompile), ExoPlayer(Application level media player for Android).
+- Application has a companion homescreen widget.
+- Widget displays ingredient list for desired recipe.
 
-Utilization of RecyclerView - App uses RecyclerView and can handle recipe steps that include videos or images.
+## Note
 
-App conforms to common standards found in the Android Nanodegree General Project Guidelines.
+There is different approaches used to handle different activities. For example in StepsActivity we are using ArrayLists instead of CursorLoader just to handle the onSaveInstanceState() manually.
 
-App conforms to common standards found in the Android Nanodegree General Project Guidelines.
+## License
 
-# Components and Libraries
+```This is free and unencumbered software released into the public domain.
 
-MEETS SPECIFICATIONS
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
 
-Master Detail Flow and Fragments - Application uses Master Detail Flow to display recipe steps and navigation between them.
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
 
-Exoplayer(MediaPlayer) to display videos - Application uses Exoplayer to display videos.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
 
-Proper utilization of video assets - Application properly initializes and releases video assets when appropriate.
-
-Proper network asset utilization - Application should properly retrieve media assets from the provided network links. It should properly handle network requests.
-
-UI Testing - Application makes use of Espresso to test aspects of the UI.
-
-Third-party libraries - Application sensibly utilizes a third-party library to enhance the app's features. That could be helper library to interface with ContentProviders if you choose to store the recipes, a UI binding library to avoid writing findViewById a bunch of times, or something similar.
-
-Third-party libraries utilized: Retrofit(Annotations for interface methods to control the HTTP request behavior),
-Butter Knife(Field and method binding for Android views), Picasso(A powerful image downloading and caching library for Android),
-Android Debug Database(Used only in debugCompile), ExoPlayer(Application level media player for Android).
-
-
-# Homescreen Widget
-
-MEETS SPECIFICATIONS
-
-Application has a companion homescreen widget.
-
-Widget displays ingredient list for desired recipe.
-
-# Note
-
-There is different approaches used to handle different activities. For example in StepsActivity we are using ArrayLists instead
-of CursorLoader just to handle the onSaveInstanceState() manually.
+For more information, please refer to <http://unlicense.org>
